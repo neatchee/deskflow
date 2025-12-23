@@ -11,6 +11,7 @@
 #include "arch/Arch.h"
 #include "arch/win32/ArchMiscWindows.h"
 #include "arch/win32/XArchWindows.h"
+#include "base/DirectionTypes.h"
 #include "base/IEventQueue.h"
 #include "base/Log.h"
 #include "base/TMethodJob.h"
@@ -32,6 +33,7 @@
 #include <algorithm>
 #include <comutil.h>
 #include <string.h>
+#include <vector>
 
 // suppress warning about GetVersionEx, which is used indirectly in this
 // compilation unit.
@@ -192,6 +194,9 @@ void MSWindowsScreen::enable()
   m_desks->enable();
 
   if (m_isPrimary) {
+    // register for raw input to handle high polling rate mice
+    registerRawInput();
+
     // set jump zones
     m_hook.setZone(m_x, m_y, m_w, m_h, getJumpZoneSize());
 
@@ -209,6 +214,9 @@ void MSWindowsScreen::disable()
   m_desks->disable();
 
   if (m_isPrimary) {
+    // unregister raw input
+    unregisterRawInput();
+
     // disable hooks
     m_hook.setMode(kHOOK_DISABLE);
 
@@ -937,6 +945,16 @@ bool MSWindowsScreen::onPreDispatchPrimary(HWND, UINT message, WPARAM wParam, LP
 bool MSWindowsScreen::onEvent(HWND, UINT msg, WPARAM wParam, LPARAM lParam, LRESULT *result)
 {
   switch (msg) {
+
+  case WM_INPUT:
+    // handle raw input for high polling rate mouse support
+    if (m_isPrimary && m_rawInputRegistered) {
+      if (handleRawInput((HRAWINPUT)lParam)) {
+        *result = 0;
+        return true;
+      }
+    }
+    break;
 
   case WM_CLIPBOARDUPDATE: {
     DWORD clipboardSequenceNumber = GetClipboardSequenceNumber();
@@ -1736,4 +1754,224 @@ bool MSWindowsScreen::isModifierRepeat(KeyModifierMask oldState, KeyModifierMask
   }
 
   return result;
+}
+
+void MSWindowsScreen::registerRawInput()
+{
+  if (m_rawInputRegistered) {
+    return;
+  }
+
+  // Register for raw mouse input to support high polling rate devices.
+  // This provides direct access to the input buffer, bypassing the message queue
+  // which can struggle with high-frequency input events.
+  RAWINPUTDEVICE rid;
+  rid.usUsagePage = 0x01; // HID_USAGE_PAGE_GENERIC
+  rid.usUsage = 0x02;     // HID_USAGE_GENERIC_MOUSE
+  rid.dwFlags = RIDEV_INPUTSINK; // receive input even when not in foreground
+  rid.hwndTarget = m_window;
+
+  if (RegisterRawInputDevices(&rid, 1, sizeof(rid))) {
+    m_rawInputRegistered = true;
+    // Disable mouse hook since we're using raw input instead
+    MSWindowsHook::setInstallMouseHook(false);
+    LOG_DEBUG("registered for raw mouse input (high polling rate support), disabled mouse hook");
+  } else {
+    LOG_ERR("failed to register raw input devices: %d", GetLastError());
+  }
+}
+
+void MSWindowsScreen::unregisterRawInput()
+{
+  if (!m_rawInputRegistered) {
+    return;
+  }
+
+  RAWINPUTDEVICE rid;
+  rid.usUsagePage = 0x01; // HID_USAGE_PAGE_GENERIC
+  rid.usUsage = 0x02;     // HID_USAGE_GENERIC_MOUSE
+  rid.dwFlags = RIDEV_REMOVE;
+  rid.hwndTarget = nullptr;
+
+  if (RegisterRawInputDevices(&rid, 1, sizeof(rid))) {
+    m_rawInputRegistered = false;
+    // Re-enable mouse hook
+    MSWindowsHook::setInstallMouseHook(true);
+    LOG_DEBUG("unregistered raw mouse input, re-enabled mouse hook");
+  } else {
+    LOG_ERR("failed to unregister raw input devices: %d", GetLastError());
+  }
+}
+
+bool MSWindowsScreen::handleRawInput(HRAWINPUT hRawInput)
+{
+  // Use GetRawInputBuffer for batch processing of buffered input events.
+  // This is more efficient for high polling rate devices that generate
+  // many events in quick succession.
+  
+  const UINT maxInputs = 128; // Process up to 128 buffered events at once
+  std::vector<RAWINPUT> inputs(maxInputs);
+  
+  UINT numInputs = maxInputs;
+  UINT size = GetRawInputBuffer(
+      reinterpret_cast<PRAWINPUT>(inputs.data()),
+      &numInputs,
+      sizeof(RAWINPUTHEADER)
+  );
+  
+  if (size == (UINT)-1) {
+    DWORD error = GetLastError();
+    if (error != ERROR_INSUFFICIENT_BUFFER) {
+      LOG_ERR("failed to get raw input buffer: %d", error);
+    }
+    // Fall back to single event processing
+    return handleRawInputSingle(hRawInput);
+  }
+  
+  // Process all buffered events
+  bool handled = false;
+  for (UINT i = 0; i < numInputs; i++) {
+    if (inputs[i].header.dwType == RIM_TYPEMOUSE) {
+      handled = processRawMouseInput(inputs[i].data.mouse) || handled;
+    }
+  }
+  
+  return handled;
+}
+
+bool MSWindowsScreen::handleRawInputSingle(HRAWINPUT hRawInput)
+{
+  // Get the size of the raw input data
+  UINT size = 0;
+  if (GetRawInputData(hRawInput, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER)) == (UINT)-1) {
+    LOG_ERR("failed to get raw input data size: %d", GetLastError());
+    return false;
+  }
+
+  // Allocate buffer for raw input data
+  std::vector<BYTE> buffer(size);
+  RAWINPUT *raw = reinterpret_cast<RAWINPUT *>(buffer.data());
+
+  // Get the raw input data
+  if (GetRawInputData(hRawInput, RID_INPUT, raw, &size, sizeof(RAWINPUTHEADER)) != size) {
+    LOG_ERR("failed to get raw input data: %d", GetLastError());
+    return false;
+  }
+
+  // We only care about mouse input
+  if (raw->header.dwType == RIM_TYPEMOUSE) {
+    return processRawMouseInput(raw->data.mouse);
+  }
+
+  return false;
+}
+
+bool MSWindowsScreen::processRawMouseInput(const RAWMOUSE &mouse)
+{
+  // Get the current hook mode to determine how to process events
+  EHookMode mode = m_hook.getMode();
+
+  // Handle mouse movement
+  if (mouse.usFlags == MOUSE_MOVE_RELATIVE && (mouse.lLastX != 0 || mouse.lLastY != 0)) {
+    // Get current cursor position for absolute coordinates
+    POINT cursorPos;
+    if (!GetCursorPos(&cursorPos)) {
+      return false;
+    }
+
+    int32_t x = cursorPos.x;
+    int32_t y = cursorPos.y;
+
+    // In RELAY_EVENTS mode, relay and eat event
+    if (mode == kHOOK_RELAY_EVENTS) {
+      return onMouseMove(x, y);
+    }
+    // In WATCH_JUMP_ZONE mode, check for jump zone and handle accordingly
+    else if (mode == kHOOK_WATCH_JUMP_ZONE) {
+      // Get jump zone parameters
+      int32_t xScreen, yScreen, wScreen, hScreen, zoneSize;
+      m_hook.getZone(xScreen, yScreen, wScreen, hScreen, zoneSize);
+      uint32_t zoneSides = m_hook.getSides();
+
+      // Clamp position to screen bounds (handles bogus positions)
+      bool bogus = false;
+      if (x < xScreen) {
+        x = xScreen;
+        bogus = true;
+      } else if (x >= xScreen + wScreen) {
+        x = xScreen + wScreen - 1;
+        bogus = true;
+      }
+      if (y < yScreen) {
+        y = yScreen;
+        bogus = true;
+      } else if (y >= yScreen + hScreen) {
+        y = yScreen + hScreen - 1;
+        bogus = true;
+      }
+
+      // Check for mouse inside jump zone using DirectionMask enum
+      bool inside = false;
+      using enum DirectionMask;
+      if ((zoneSides & static_cast<int>(LeftMask)) != 0) {
+        inside = (x < xScreen + zoneSize);
+      }
+      if (!inside && (zoneSides & static_cast<int>(RightMask)) != 0) {
+        inside = (x >= xScreen + wScreen - zoneSize);
+      }
+      if (!inside && (zoneSides & static_cast<int>(TopMask)) != 0) {
+        inside = (y < yScreen + zoneSize);
+      }
+      if (!inside && (zoneSides & static_cast<int>(BottomMask)) != 0) {
+        inside = (y >= yScreen + hScreen - zoneSize);
+      }
+
+      // Relay the event
+      onMouseMove(x, y);
+
+      // If inside jump zone and not bogus, eat the event
+      return inside && !bogus;
+    }
+  }
+
+  // Handle mouse buttons
+  if (mouse.usButtonFlags != 0) {
+    // Map raw input button flags to window messages using a lookup table
+    struct ButtonMapping {
+      USHORT flag;
+      UINT message;
+      LPARAM data;
+    };
+    
+    const ButtonMapping buttonMappings[] = {
+      {RI_MOUSE_LEFT_BUTTON_DOWN, WM_LBUTTONDOWN, 0},
+      {RI_MOUSE_LEFT_BUTTON_UP, WM_LBUTTONUP, 0},
+      {RI_MOUSE_RIGHT_BUTTON_DOWN, WM_RBUTTONDOWN, 0},
+      {RI_MOUSE_RIGHT_BUTTON_UP, WM_RBUTTONUP, 0},
+      {RI_MOUSE_MIDDLE_BUTTON_DOWN, WM_MBUTTONDOWN, 0},
+      {RI_MOUSE_MIDDLE_BUTTON_UP, WM_MBUTTONUP, 0},
+      {RI_MOUSE_BUTTON_4_DOWN, WM_XBUTTONDOWN, XBUTTON1},
+      {RI_MOUSE_BUTTON_4_UP, WM_XBUTTONUP, XBUTTON1},
+      {RI_MOUSE_BUTTON_5_DOWN, WM_XBUTTONDOWN, XBUTTON2},
+      {RI_MOUSE_BUTTON_5_UP, WM_XBUTTONUP, XBUTTON2},
+    };
+    
+    // Process all button events
+    for (const auto& mapping : buttonMappings) {
+      if (mouse.usButtonFlags & mapping.flag) {
+        onMouseButton(mapping.message, mapping.data);
+      }
+    }
+
+    // Handle mouse wheel
+    if (mouse.usButtonFlags & RI_MOUSE_WHEEL) {
+      int32_t delta = static_cast<int16_t>(mouse.usButtonData);
+      onMouseWheel(0, delta);
+    }
+
+    // Eat button events if relaying
+    return (mode == kHOOK_RELAY_EVENTS);
+  }
+
+  return false;
 }
