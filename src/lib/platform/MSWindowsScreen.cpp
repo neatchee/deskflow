@@ -1959,6 +1959,12 @@ DWORD WINAPI MSWindowsScreen::rawInputThreadProc(LPVOID lpParameter)
 {
   MSWindowsScreen *screen = static_cast<MSWindowsScreen *>(lpParameter);
 
+  // Set thread priority to below normal to reduce CPU impact on other system tasks
+  // This allows the OS to preempt this thread more easily when other work is available
+  if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_BELOW_NORMAL)) {
+    LOG_WARN("failed to set raw input thread priority: %d", GetLastError());
+  }
+
   LOG_DEBUG("raw input polling thread started");
 
   // Allocate buffer for batch processing
@@ -1979,7 +1985,7 @@ DWORD WINAPI MSWindowsScreen::rawInputThreadProc(LPVOID lpParameter)
         }
       }
       // Brief yield on error to avoid busy loop
-      Sleep(0);
+      Sleep(1);
       continue;
     }
 
@@ -1995,8 +2001,9 @@ DWORD WINAPI MSWindowsScreen::rawInputThreadProc(LPVOID lpParameter)
         }
       }
     } else {
-      // No input available, yield to other threads
-      Sleep(0);
+      // No input available, sleep briefly to reduce CPU usage
+      // 1ms provides good balance between responsiveness and CPU efficiency
+      Sleep(1);
     }
   }
 
