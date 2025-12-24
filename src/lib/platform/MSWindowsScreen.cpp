@@ -11,6 +11,7 @@
 #include "arch/Arch.h"
 #include "arch/win32/ArchMiscWindows.h"
 #include "arch/win32/XArchWindows.h"
+#include "base/DirectionTypes.h"
 #include "base/IEventQueue.h"
 #include "base/Log.h"
 #include "base/TMethodJob.h"
@@ -32,6 +33,7 @@
 #include <algorithm>
 #include <comutil.h>
 #include <string.h>
+#include <vector>
 
 // suppress warning about GetVersionEx, which is used indirectly in this
 // compilation unit.
@@ -192,6 +194,9 @@ void MSWindowsScreen::enable()
   m_desks->enable();
 
   if (m_isPrimary) {
+    // register for raw input to handle high polling rate mice
+    registerRawInput();
+
     // set jump zones
     m_hook.setZone(m_x, m_y, m_w, m_h, getJumpZoneSize());
 
@@ -209,6 +214,9 @@ void MSWindowsScreen::disable()
   m_desks->disable();
 
   if (m_isPrimary) {
+    // unregister raw input
+    unregisterRawInput();
+
     // disable hooks
     m_hook.setMode(kHOOK_DISABLE);
 
@@ -937,6 +945,16 @@ bool MSWindowsScreen::onPreDispatchPrimary(HWND, UINT message, WPARAM wParam, LP
 bool MSWindowsScreen::onEvent(HWND, UINT msg, WPARAM wParam, LPARAM lParam, LRESULT *result)
 {
   switch (msg) {
+
+  case WM_INPUT:
+    // When raw input thread is active, we ignore WM_INPUT messages since the
+    // dedicated thread polls GetRawInputBuffer() directly, bypassing the queue.
+    // This prevents the message queue from becoming a bottleneck.
+    if (m_isPrimary && m_rawInputRegistered && m_rawInputThread != nullptr) {
+      *result = 0;
+      return true;
+    }
+    break;
 
   case WM_CLIPBOARDUPDATE: {
     DWORD clipboardSequenceNumber = GetClipboardSequenceNumber();
@@ -1736,4 +1754,259 @@ bool MSWindowsScreen::isModifierRepeat(KeyModifierMask oldState, KeyModifierMask
   }
 
   return result;
+}
+
+void MSWindowsScreen::registerRawInput()
+{
+  if (m_rawInputRegistered) {
+    return;
+  }
+
+  // Register for raw mouse input to support high polling rate devices.
+  // We use a dedicated thread to poll GetRawInputBuffer() directly,
+  // which completely bypasses the message queue bottleneck.
+  // We keep RIDEV_INPUTSINK but not RIDEV_NOLEGACY to maintain compatibility
+  // with other code that may rely on legacy mouse messages.
+  RAWINPUTDEVICE rid;
+  rid.usUsagePage = 0x01;        // HID_USAGE_PAGE_GENERIC
+  rid.usUsage = 0x02;            // HID_USAGE_GENERIC_MOUSE
+  rid.dwFlags = RIDEV_INPUTSINK; // receive input even when not in foreground
+  rid.hwndTarget = m_window;
+
+  if (RegisterRawInputDevices(&rid, 1, sizeof(rid))) {
+    m_rawInputRegistered = true;
+    // Disable mouse hook since we're using raw input instead
+    MSWindowsHook::setInstallMouseHook(false);
+    // Start dedicated polling thread to bypass message queue
+    startRawInputThread();
+    LOG_DEBUG("registered for raw mouse input (high polling rate support), disabled mouse hook");
+  } else {
+    LOG_ERR("failed to register raw input devices: %d", GetLastError());
+  }
+}
+
+void MSWindowsScreen::unregisterRawInput()
+{
+  if (!m_rawInputRegistered) {
+    return;
+  }
+
+  // Stop the polling thread first
+  stopRawInputThread();
+
+  RAWINPUTDEVICE rid;
+  rid.usUsagePage = 0x01; // HID_USAGE_PAGE_GENERIC
+  rid.usUsage = 0x02;     // HID_USAGE_GENERIC_MOUSE
+  rid.dwFlags = RIDEV_REMOVE;
+  rid.hwndTarget = nullptr;
+
+  if (RegisterRawInputDevices(&rid, 1, sizeof(rid))) {
+    m_rawInputRegistered = false;
+    // Re-enable mouse hook
+    MSWindowsHook::setInstallMouseHook(true);
+    LOG_DEBUG("unregistered raw mouse input, re-enabled mouse hook");
+  } else {
+    LOG_ERR("failed to unregister raw input devices: %d", GetLastError());
+  }
+}
+
+void MSWindowsScreen::processRawMouseInput(const RAWMOUSE &mouse)
+{
+  // Get the current hook mode to determine how to process events
+  EHookMode mode = m_hook.getMode();
+
+  // Handle mouse movement
+  if (mouse.usFlags == MOUSE_MOVE_RELATIVE && (mouse.lLastX != 0 || mouse.lLastY != 0)) {
+    // Get current cursor position for absolute coordinates
+    POINT cursorPos;
+    if (!GetCursorPos(&cursorPos)) {
+      return;
+    }
+
+    int32_t x = cursorPos.x;
+    int32_t y = cursorPos.y;
+
+    // In RELAY_EVENTS mode, relay event
+    if (mode == kHOOK_RELAY_EVENTS) {
+      onMouseMove(x, y);
+      return;
+    }
+    // In WATCH_JUMP_ZONE mode, check for jump zone and handle accordingly
+    else if (mode == kHOOK_WATCH_JUMP_ZONE) {
+      // Get jump zone parameters
+      int32_t xScreen, yScreen, wScreen, hScreen, zoneSize;
+      m_hook.getZone(xScreen, yScreen, wScreen, hScreen, zoneSize);
+      uint32_t zoneSides = m_hook.getSides();
+
+      // Clamp position to screen bounds (handles bogus positions)
+      bool bogus = false;
+      if (x < xScreen) {
+        x = xScreen;
+        bogus = true;
+      } else if (x >= xScreen + wScreen) {
+        x = xScreen + wScreen - 1;
+        bogus = true;
+      }
+      if (y < yScreen) {
+        y = yScreen;
+        bogus = true;
+      } else if (y >= yScreen + hScreen) {
+        y = yScreen + hScreen - 1;
+        bogus = true;
+      }
+
+      // Check for mouse inside jump zone using DirectionMask enum
+      bool inside = false;
+      using enum DirectionMask;
+      if ((zoneSides & static_cast<int>(LeftMask)) != 0) {
+        inside = (x < xScreen + zoneSize);
+      }
+      if (!inside && (zoneSides & static_cast<int>(RightMask)) != 0) {
+        inside = (x >= xScreen + wScreen - zoneSize);
+      }
+      if (!inside && (zoneSides & static_cast<int>(TopMask)) != 0) {
+        inside = (y < yScreen + zoneSize);
+      }
+      if (!inside && (zoneSides & static_cast<int>(BottomMask)) != 0) {
+        inside = (y >= yScreen + hScreen - zoneSize);
+      }
+
+      // Relay the event
+      onMouseMove(x, y);
+    }
+  }
+
+  // Handle mouse buttons
+  if (mouse.usButtonFlags != 0) {
+    // Map raw input button flags to window messages using a lookup table
+    struct ButtonMapping
+    {
+      USHORT flag;
+      UINT message;
+      LPARAM data;
+    };
+
+    const ButtonMapping buttonMappings[] = {
+        {RI_MOUSE_LEFT_BUTTON_DOWN, WM_LBUTTONDOWN, 0},     {RI_MOUSE_LEFT_BUTTON_UP, WM_LBUTTONUP, 0},
+        {RI_MOUSE_RIGHT_BUTTON_DOWN, WM_RBUTTONDOWN, 0},    {RI_MOUSE_RIGHT_BUTTON_UP, WM_RBUTTONUP, 0},
+        {RI_MOUSE_MIDDLE_BUTTON_DOWN, WM_MBUTTONDOWN, 0},   {RI_MOUSE_MIDDLE_BUTTON_UP, WM_MBUTTONUP, 0},
+        {RI_MOUSE_BUTTON_4_DOWN, WM_XBUTTONDOWN, XBUTTON1}, {RI_MOUSE_BUTTON_4_UP, WM_XBUTTONUP, XBUTTON1},
+        {RI_MOUSE_BUTTON_5_DOWN, WM_XBUTTONDOWN, XBUTTON2}, {RI_MOUSE_BUTTON_5_UP, WM_XBUTTONUP, XBUTTON2},
+    };
+
+    // Process all button events
+    for (const auto &mapping : buttonMappings) {
+      if (mouse.usButtonFlags & mapping.flag) {
+        onMouseButton(mapping.message, mapping.data);
+      }
+    }
+
+    // Handle mouse wheel
+    if (mouse.usButtonFlags & RI_MOUSE_WHEEL) {
+      int32_t delta = static_cast<int16_t>(mouse.usButtonData);
+      onMouseWheel(0, delta);
+    }
+  }
+}
+
+void MSWindowsScreen::startRawInputThread()
+{
+  if (m_rawInputThread != nullptr) {
+    return;
+  }
+
+  m_rawInputThreadRunning = true;
+  m_rawInputThread = CreateThread(
+      nullptr,            // default security attributes
+      0,                  // default stack size
+      rawInputThreadProc, // thread function
+      this,               // thread parameter (this pointer)
+      0,                  // default creation flags
+      nullptr             // don't need thread ID
+  );
+
+  if (m_rawInputThread == nullptr) {
+    LOG_ERR("failed to create raw input thread: %d", GetLastError());
+    m_rawInputThreadRunning = false;
+  } else {
+    LOG_DEBUG("started raw input polling thread");
+  }
+}
+
+void MSWindowsScreen::stopRawInputThread()
+{
+  if (m_rawInputThread == nullptr) {
+    return;
+  }
+
+  m_rawInputThreadRunning = false;
+
+  // Wait for thread to exit (with generous timeout to allow graceful shutdown)
+  DWORD result = WaitForSingleObject(m_rawInputThread, 5000);
+  if (result == WAIT_TIMEOUT) {
+    LOG_ERR("raw input thread did not exit cleanly within 5 seconds");
+    // As a last resort, terminate the thread
+    // Note: This is dangerous but necessary if thread is truly stuck
+    TerminateThread(m_rawInputThread, 0);
+  }
+
+  CloseHandle(m_rawInputThread);
+  m_rawInputThread = nullptr;
+  LOG_DEBUG("stopped raw input polling thread");
+}
+
+DWORD WINAPI MSWindowsScreen::rawInputThreadProc(LPVOID lpParameter)
+{
+  MSWindowsScreen *screen = static_cast<MSWindowsScreen *>(lpParameter);
+
+  // Set thread priority to below normal to reduce CPU impact on other system tasks
+  // This allows the OS to preempt this thread more easily when other work is available
+  if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_BELOW_NORMAL)) {
+    LOG_WARN("failed to set raw input thread priority: %d", GetLastError());
+  }
+
+  LOG_DEBUG("raw input polling thread started");
+
+  // Allocate buffer for batch processing
+  const UINT maxInputs = 128;
+  std::vector<RAWINPUT> inputs(maxInputs);
+
+  while (screen->m_rawInputThreadRunning) {
+    // Poll GetRawInputBuffer directly, bypassing the message queue
+    UINT numInputs = maxInputs;
+    UINT size = GetRawInputBuffer(reinterpret_cast<PRAWINPUT>(inputs.data()), &numInputs, sizeof(RAWINPUTHEADER));
+
+    if (size == (UINT)-1) {
+      DWORD error = GetLastError();
+      if (error != ERROR_INSUFFICIENT_BUFFER) {
+        // Only log non-buffer errors
+        if (error != ERROR_INVALID_PARAMETER) {
+          LOG_DEBUG1("GetRawInputBuffer error: %d", error);
+        }
+      }
+      // Brief yield on error to avoid busy loop
+      Sleep(1);
+      continue;
+    }
+
+    if (numInputs > 0) {
+      // Process all buffered events with minimal lock time
+      // We could optimize further by using a lock-free queue, but for now
+      // we keep the lock to ensure thread safety with minimal complexity
+      std::lock_guard<std::mutex> lock(screen->m_rawInputMutex);
+
+      for (UINT i = 0; i < numInputs; i++) {
+        if (inputs[i].header.dwType == RIM_TYPEMOUSE) {
+          screen->processRawMouseInput(inputs[i].data.mouse);
+        }
+      }
+    } else {
+      // No input available, sleep briefly to reduce CPU usage
+      // 1ms provides good balance between responsiveness and CPU efficiency
+      Sleep(1);
+    }
+  }
+
+  LOG_DEBUG("raw input polling thread exiting");
+  return 0;
 }

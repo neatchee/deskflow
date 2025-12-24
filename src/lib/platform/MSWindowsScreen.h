@@ -12,7 +12,9 @@
 #include "platform/MSWindowsHook.h"
 #include "platform/MSWindowsPowerManager.h"
 
+#include <atomic>
 #include <map>
+#include <mutex>
 #include <string>
 
 #define WIN32_LEAN_AND_MEAN
@@ -228,6 +230,16 @@ private: // HACK
   // check if it is a modifier key repeating message
   bool isModifierRepeat(KeyModifierMask oldState, KeyModifierMask state, WPARAM wParam) const;
 
+  // raw input handling for high polling rate mouse support
+  void registerRawInput();
+  void unregisterRawInput();
+  void processRawMouseInput(const RAWMOUSE &mouse);
+
+  // dedicated raw input polling thread to bypass message queue
+  void startRawInputThread();
+  void stopRawInputThread();
+  static DWORD WINAPI rawInputThreadProc(LPVOID lpParameter);
+
 private:
   struct HotKeyItem
   {
@@ -329,6 +341,14 @@ private:
   MOUSEKEYS m_mouseKeys;
 
   MSWindowsHook m_hook;
+
+  // raw input for high polling rate mouse support
+  bool m_rawInputRegistered = false;
+
+  // dedicated thread for polling raw input buffer
+  HANDLE m_rawInputThread = nullptr;
+  std::atomic<bool> m_rawInputThreadRunning{false};
+  std::mutex m_rawInputMutex;
 
   static MSWindowsScreen *s_screen;
 
