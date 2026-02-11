@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "Config.h"
 #include "deskflow/KeyState.h"
+#include "platform/XWindowsConfig.h"
 
 #include <map>
 #include <vector>
@@ -108,7 +108,7 @@ private:
 
   //! Create and send language change request to \p group by DBus interface
   /*!
-  Returns the existance of nedeed DBus interface.
+  Returns the existence of needed DBus interface.
   */
   bool setCurrentLanguageWithDBus(int32_t group) const;
 

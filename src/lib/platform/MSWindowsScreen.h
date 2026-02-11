@@ -31,9 +31,7 @@ class MSWindowsDropTarget;
 class MSWindowsScreen : public PlatformScreen
 {
 public:
-  MSWindowsScreen(
-      bool isPrimary, bool useHooks, IEventQueue *events, bool enableLangSync = false, bool invetScrolling = false
-  );
+  MSWindowsScreen(bool isPrimary, bool useHooks, IEventQueue *events, bool enableLangSync = false);
   ~MSWindowsScreen() override;
 
   //! @name manipulators
@@ -100,7 +98,7 @@ public:
   void fakeMouseButton(ButtonID id, bool press) override;
   void fakeMouseMove(int32_t x, int32_t y) override;
   void fakeMouseRelativeMove(int32_t dx, int32_t dy) const override;
-  void fakeMouseWheel(int32_t xDelta, int32_t yDelta) const override;
+  void fakeMouseWheel(ScrollDelta delta) const override;
 
   // IKeyState overrides
   virtual void updateKeys();
@@ -330,7 +328,7 @@ private:
   HotKeyToIDMap m_hotKeyToIDMap;
 
   // map of button state
-  bool m_buttons[1 + kButtonExtra0 + 1];
+  bool m_buttons[NumButtonIDs];
 
   // m_hasMouse is true if there's a mouse attached to the system or
   // mouse keys is simulating one.  we track this so we can force the

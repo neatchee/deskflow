@@ -1,5 +1,6 @@
 /*
  * Deskflow -- mouse and keyboard sharing utility
+ * SPDX-FileCopyrightText: (C) 2026 Deskflow Developers
  * SPDX-FileCopyrightText: (C) 2012 - 2016 Symless Ltd.
  * SPDX-FileCopyrightText: (C) 2004 Chris Schoeneman
  * SPDX-License-Identifier: GPL-2.0-only WITH LicenseRef-OpenSSL-Exception
@@ -9,9 +10,7 @@
 #include "base/DirectionTypes.h"
 #include "deskflow/App.h"
 
-PlatformScreen::PlatformScreen(IEventQueue *events, bool invertScrolling)
-    : IPlatformScreen(events),
-      m_invertScrollDirection(invertScrolling)
+PlatformScreen::PlatformScreen(IEventQueue *events) : IPlatformScreen(events)
 {
   // do nothing
 }
@@ -87,11 +86,6 @@ void PlatformScreen::pollPressedKeys(KeyButtonSet &pressedKeys) const
 void PlatformScreen::clearStaleModifiers()
 {
   getKeyState()->clearStaleModifiers();
-}
-
-int32_t PlatformScreen::mapClientScrollDirection(int32_t x) const
-{
-  return (m_invertScrollDirection ? -x : x);
 }
 
 std::string PlatformScreen::sidesMaskToString(uint32_t sides)

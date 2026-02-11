@@ -384,6 +384,7 @@ void SecureSocket::freeSSL()
   setJob(nullptr);
   if (m_ssl) {
     if (m_ssl->m_ssl != nullptr) {
+      SSL_set_quiet_shutdown(m_ssl->m_ssl, 1);
       SSL_shutdown(m_ssl->m_ssl);
 
       SSL_free(m_ssl->m_ssl);
@@ -468,7 +469,7 @@ int SecureSocket::secureConnect(int socket)
   LOG_DEBUG2("connecting secure socket");
 
   // enable hostname verification.
-  const auto name = Settings::value(Settings::Core::ScreenName).toString().toStdString();
+  const auto name = Settings::value(Settings::Core::ComputerName).toString().toStdString();
   SSL_set1_host(m_ssl->m_ssl, name.c_str());
   int r = SSL_connect(m_ssl->m_ssl);
 

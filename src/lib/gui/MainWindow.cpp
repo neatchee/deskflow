@@ -1,6 +1,7 @@
 /*
  * Deskflow -- mouse and keyboard sharing utility
- * SPDX-FileCopyrightText: (C) 2024 - 2025 Chris Rizzitello <sithord48@gmail.com>
+ * SPDX-FileCopyrightText: (C) 2025 Deskflow Developers
+ * SPDX-FileCopyrightText: (C) 2024 - 2026 Chris Rizzitello <sithord48@gmail.com>
  * SPDX-FileCopyrightText: (C) 2012 - 2024 Symless Ltd.
  * SPDX-FileCopyrightText: (C) 2008 Volker Lanz <vl@fidra.de>
  * SPDX-License-Identifier: GPL-2.0-only WITH LicenseRef-OpenSSL-Exception
@@ -11,7 +12,6 @@
 
 #include "Diagnostic.h"
 #include "StyleUtils.h"
-#include "VersionInfo.h"
 
 #include "dialogs/AboutDialog.h"
 #include "dialogs/FingerprintDialog.h"
@@ -21,16 +21,13 @@
 #include "common/PlatformInfo.h"
 #include "common/Settings.h"
 #include "common/UrlConstants.h"
+#include "common/VersionInfo.h"
 #include "gui/Messages.h"
 #include "gui/TlsUtility.h"
 #include "gui/core/CoreProcess.h"
 #include "gui/ipc/DaemonIpcClient.h"
 #include "gui/widgets/LogDock.h"
 #include "net/FingerprintDatabase.h"
-
-#if defined(Q_OS_LINUX)
-#include "Config.h"
-#endif
 
 #include <QCloseEvent>
 #include <QDesktopServices>
@@ -86,7 +83,8 @@ MainWindow::MainWindow()
       m_actionSettings{new QAction(this)},
       m_actionStartCore{new QAction(this)},
       m_actionRestartCore{new QAction(this)},
-      m_actionStopCore{new QAction(this)}
+      m_actionStopCore{new QAction(this)},
+      m_networkMonitor{new NetworkMonitor(this)}
 {
   ui->setupUi(this);
 
@@ -106,10 +104,10 @@ MainWindow::MainWindow()
     m_actionTrayQuit->setShortcut(QKeySequence::Quit);
   }
 
-  m_actionQuit->setIcon(QIcon(QIcon::fromTheme("application-exit")));
+  m_actionQuit->setIcon(QIcon::fromTheme("application-exit"));
   m_actionQuit->setMenuRole(QAction::QuitRole);
 
-  m_actionTrayQuit->setIcon(QIcon(QIcon::fromTheme("application-exit")));
+  m_actionTrayQuit->setIcon(QIcon::fromTheme("application-exit"));
   m_actionTrayQuit->setMenuRole(QAction::NoRole);
 
   m_actionClearSettings->setIcon(QIcon::fromTheme(QStringLiteral("edit-clear-all")));
@@ -128,7 +126,7 @@ MainWindow::MainWindow()
   m_actionStopCore->setIcon(QIcon::fromTheme(QIcon::ThemeIcon::ProcessStop));
   m_actionStopCore->setMenuRole(QAction::NoRole);
 
-  m_actionReportBug->setIcon(QIcon(QIcon::fromTheme(QStringLiteral("tools-report-bug"))));
+  m_actionReportBug->setIcon(QIcon::fromTheme(QStringLiteral("tools-report-bug")));
   m_actionReportBug->setMenuRole(QAction::NoRole);
 
   // Setup the Instance Checking
@@ -165,6 +163,11 @@ MainWindow::MainWindow()
 }
 MainWindow::~MainWindow()
 {
+  // Stop network monitoring
+  if (m_networkMonitor) {
+    m_networkMonitor->stopMonitoring();
+  }
+
   m_guiDupeChecker->close();
   m_coreProcess.cleanup();
 }
@@ -192,13 +195,9 @@ void MainWindow::restoreWindow()
 
 void MainWindow::setupControls()
 {
-  setWindowTitle(kAppName);
-
   secureSocket(false);
 
   ui->btnConfigureServer->setIcon(QIcon::fromTheme(QStringLiteral("configure")));
-
-  updateNetworkInfo();
 
   if (Settings::value(Settings::Core::LastVersion).toString() != kVersion) {
     Settings::setValue(Settings::Core::LastVersion, kVersion);
@@ -334,6 +333,8 @@ void MainWindow::connectSlots()
   connect(ui->btnEditName, &QPushButton::clicked, this, &MainWindow::showHostNameEditor);
 
   connect(ui->lineEditName, &QLineEdit::editingFinished, this, &MainWindow::setHostName);
+
+  connect(m_networkMonitor, &NetworkMonitor::ipAddressesChanged, this, &MainWindow::updateIpLabel);
 }
 
 void MainWindow::toggleLogVisible(bool visible)
@@ -374,7 +375,7 @@ void MainWindow::settingsChanged(const QString &key)
     return;
   }
 
-  if (key == Settings::Core::ScreenName)
+  if (key == Settings::Core::ComputerName)
     updateScreenName();
 
   if ((key == Settings::Security::Certificate) || (key == Settings::Security::KeySize) ||
@@ -425,6 +426,12 @@ void MainWindow::coreProcessError(CoreProcess::Error error)
 
 void MainWindow::startCore()
 {
+  // Save current IP state when server starts
+  if (m_coreProcess.mode() == CoreMode::Server && Settings::value(Settings::Core::Interface).toString().isEmpty()) {
+    m_serverStartIPs = m_networkMonitor->getAvailableIPv4Addresses();
+    m_serverStartSuggestedIP = m_serverStartIPs.isEmpty() ? "" : m_serverStartIPs.first();
+  }
+
   m_coreProcess.start();
   m_actionStartCore->setVisible(false);
   m_actionRestartCore->setVisible(true);
@@ -444,6 +451,16 @@ void MainWindow::clearSettings()
     qDebug() << "clear settings cancelled";
     return;
   }
+
+  m_networkMonitor->stopMonitoring();
+
+  disconnect(&m_coreProcess, nullptr, this, nullptr);
+  disconnect(&m_serverConnection, nullptr, this, nullptr);
+  disconnect(&m_clientConnection, nullptr, this, nullptr);
+  disconnect(&m_versionChecker, nullptr, this, nullptr);
+  disconnect(m_guiDupeChecker, nullptr, this, nullptr);
+  disconnect(m_trayIcon, nullptr, this, nullptr);
+  disconnect(m_logDock->toggleViewAction(), nullptr, this, nullptr);
 
   m_coreProcess.stop();
   m_coreProcess.clearSettings();
@@ -477,7 +494,7 @@ void MainWindow::openHelpUrl() const
 
 void MainWindow::openGetNewVersionUrl() const
 {
-  QDesktopServices::openUrl(kUrlDownload);
+  QDesktopServices::openUrl(QUrl(kUrlDownload));
 }
 
 void MainWindow::openSettings()
@@ -521,7 +538,6 @@ void MainWindow::coreModeToggled()
 
 void MainWindow::updateModeControls(bool serverMode)
 {
-  ui->lblIpAddresses->setVisible(serverMode);
   ui->serverOptions->setVisible(serverMode);
   ui->clientOptions->setVisible(!serverMode);
   ui->lblNoMode->setVisible(false);
@@ -534,6 +550,15 @@ void MainWindow::updateModeControls(bool serverMode)
   updateModeControlLabels();
 
   toggleCanRunCore((!serverMode && !ui->lineHostname->text().isEmpty()) || serverMode);
+
+  ui->lblIpAddresses->setVisible(serverMode);
+  if (serverMode) {
+    // Initialize network monitoring
+    updateNetworkInfo();
+    m_networkMonitor->startMonitoring();
+  } else {
+    m_networkMonitor->stopMonitoring();
+  }
 }
 
 void MainWindow::updateModeControlLabels()
@@ -590,43 +615,7 @@ void MainWindow::updateSecurityIcon(bool visible)
 
 void MainWindow::updateNetworkInfo()
 {
-  static const auto colorText = QStringLiteral(R"(<span style="color:%1;">%2</span>)");
-
-  QStringList ipList;
-  QString suggestedAddress;
-
-  bool hinted = false;
-
-  const auto addresses = QNetworkInterface::allAddresses();
-  for (const auto &address : addresses) {
-    if (address.protocol() == QAbstractSocket::IPv4Protocol && address != QHostAddress(QHostAddress::LocalHost) &&
-        !address.isInSubnet(QHostAddress::parseSubnet("169.254.0.0/16"))) {
-      // usually 192.168.x.x is a useful ip for the user, so indicate
-      // this by coloring it in the "link" color
-      if (!hinted && address.isInSubnet(QHostAddress::parseSubnet("192.168/16"))) {
-        suggestedAddress = address.toString();
-        ipList.append(colorText.arg(palette().link().color().name(), suggestedAddress));
-        hinted = true;
-      } else {
-        ipList.append(address.toString());
-      }
-    }
-  }
-
-  if (ipList.isEmpty()) {
-    ui->lblIpAddresses->setText(colorText.arg(palette().linkVisited().color().name(), tr("No IP Detected")));
-    ui->lblIpAddresses->setToolTip(tr("Unable to detect an IP address. Check your network connection is active."));
-    return;
-  }
-
-  ui->lblIpAddresses->setText(tr("Suggested IP: %1").arg(suggestedAddress.isEmpty() ? ipList.first() : suggestedAddress)
-  );
-
-  if (auto toolTipBase = tr("<p>If connecting via the hostname fails, try %1</p>"); ipList.count() < 2) {
-    ui->lblIpAddresses->setToolTip(toolTipBase.arg(tr("the suggested IP.")));
-  } else {
-    ui->lblIpAddresses->setToolTip(toolTipBase.arg(tr("one of the following IPs:<br/>%1").arg(ipList.join("<br/>"))));
-  }
+  updateIpLabel(m_networkMonitor->getAvailableIPv4Addresses());
 }
 
 void MainWindow::serverConnectionConfigureClient(const QString &clientName)
@@ -664,7 +653,7 @@ void MainWindow::open()
   if (Settings::value(Settings::Gui::AutoUpdateCheck).toBool()) {
     m_versionChecker.checkLatest();
   } else {
-    qDebug() << "update check disabled";
+    qDebug() << "skipping check for new version, disabled";
   }
 
   if (Settings::value(Settings::Gui::AutoStartCore).toBool()) {
@@ -721,10 +710,22 @@ void MainWindow::setupTrayIcon()
 
 void MainWindow::applyConfig()
 {
-  if (!Settings::value(Settings::Client::RemoteHost).isNull())
-    ui->lineHostname->setText(Settings::value(Settings::Client::RemoteHost).toString());
+  if (Settings::value(Settings::Gui::ShowVersionInTitle).toBool()) {
+    setWindowTitle(QStringLiteral("%1 - %2").arg(kAppName, kDisplayVersion));
+  } else {
+    setWindowTitle(kAppName);
+  }
+
+  if (const auto host = Settings::value(Settings::Client::RemoteHost).toString(); !host.isEmpty())
+    ui->lineHostname->setText(host);
+
   updateLocalFingerprint();
   setTrayIcon();
+
+  if (const auto ip = Settings::value(Settings::Core::Interface).toString(); !ip.isEmpty()) {
+    m_serverStartIPs = {ip};
+    m_serverStartSuggestedIP = ip;
+  }
 
   const auto coreMode = Settings::value(Settings::Core::CoreMode).value<Settings::CoreMode>();
 
@@ -915,10 +916,12 @@ void MainWindow::updateStatus()
     break;
 
   case Stopped:
+    updateNetworkInfo();
     setStatus(tr("%1 is not running").arg(kAppName));
     break;
 
   case Started: {
+    updateNetworkInfo();
     switch (connection) {
       using enum CoreConnectionState;
 
@@ -1101,7 +1104,7 @@ void MainWindow::secureSocket(bool secureSocket)
 
 void MainWindow::updateScreenName()
 {
-  const auto screenName = Settings::value(Settings::Core::ScreenName).toString();
+  const auto screenName = Settings::value(Settings::Core::ComputerName).toString();
   ui->lblComputerName->setText(screenName);
   ui->lineEditName->setText(screenName);
   m_serverConfig.updateServerName();
@@ -1137,7 +1140,7 @@ void MainWindow::setHostName()
   ui->btnEditName->show();
 
   QString text = ui->lineEditName->text();
-  const auto screenName = Settings::value(Settings::Core::ScreenName).toString();
+  const auto screenName = Settings::value(Settings::Core::ComputerName).toString();
 
   if (text == screenName)
     return;
@@ -1169,7 +1172,7 @@ void MainWindow::setHostName()
   }
 
   ui->lblComputerName->setText(ui->lineEditName->text());
-  Settings::setValue(Settings::Core::ScreenName, ui->lineEditName->text());
+  Settings::setValue(Settings::Core::ComputerName, ui->lineEditName->text());
   if (isServer)
     serverConfig().updateServerName();
   applyConfig();
@@ -1235,7 +1238,7 @@ void MainWindow::remoteHostChanged(const QString &newRemoteHost)
   m_coreProcess.setAddress(newRemoteHost);
   toggleCanRunCore(!newRemoteHost.isEmpty() && ui->rbModeClient->isChecked());
   if (newRemoteHost.isEmpty()) {
-    Settings::setValue(Settings::Client::RemoteHost, QVariant());
+    Settings::setValue(Settings::Client::RemoteHost);
   } else {
     Settings::setValue(Settings::Client::RemoteHost, newRemoteHost);
   }
@@ -1257,4 +1260,51 @@ void MainWindow::handleNewClientPromptRequest(const QString &clientName, bool us
   showAndActivate();
   bool result = deskflow::gui::messages::showNewClientPrompt(this, clientName, usePeerAuth);
   m_serverConnection.handleNewClientResult(clientName, result);
+}
+
+void MainWindow::updateIpLabel(const QStringList &addresses)
+{
+  if (m_coreProcess.mode() != CoreMode::Server) {
+    return;
+  }
+
+  static const auto colorText = QStringLiteral(R"(<span style="color:%1;">%2</span>)");
+  const bool serverStarted = m_coreProcess.isStarted();
+  const bool fixedIP = !Settings::value(Settings::Core::Interface).toString().isEmpty();
+
+  if (!fixedIP && addresses.isEmpty() && !serverStarted || (serverStarted && m_serverStartSuggestedIP.isEmpty())) {
+    ui->lblIpAddresses->setText(colorText.arg(palette().linkVisited().color().name(), tr("No IP Detected")));
+    ui->lblIpAddresses->setToolTip(tr("Unable to detect an IP address. Check your network connection is active."));
+    return;
+  }
+
+  QString labelText = fixedIP ? tr("Using IP: ") : tr("Suggested IP: ");
+  QString toolTipText = tr("<p>If connecting via the hostname fails, try %1</p>");
+
+  // Get all available IPs for tooltip
+  const bool filterIpList = (serverStarted || fixedIP);
+  const QRegularExpression ipListFilter(filterIpList ? QStringLiteral("(%1)").arg(m_serverStartIPs.join("|")) : "");
+  const QStringList ipList = addresses.filter(ipListFilter);
+
+  bool IPValid = true;
+  if (filterIpList && (m_serverStartSuggestedIP != m_currentIpAddress) || !ipList.contains(m_serverStartSuggestedIP)) {
+    IPValid = !ipList.isEmpty();
+  }
+
+  if (IPValid) {
+    m_currentIpAddress = ipList.first();
+    labelText.append(m_currentIpAddress);
+  } else {
+    labelText.append(colorText.arg(palette().linkVisited().color().name(), m_serverStartSuggestedIP));
+    toolTipText.append(tr("\nA bound IP is now invalid, you may need to restart the server."));
+  }
+
+  if (ipList.count() < 2 || fixedIP) {
+    toolTipText = toolTipText.arg(tr("the suggested IP."));
+  } else {
+    toolTipText = toolTipText.arg(tr("one of the following IPs:<br/>%1").arg(ipList.join("<br/>")));
+  }
+
+  ui->lblIpAddresses->setText(labelText);
+  ui->lblIpAddresses->setToolTip(toolTipText);
 }

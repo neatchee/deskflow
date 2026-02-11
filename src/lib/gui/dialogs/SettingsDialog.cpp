@@ -1,6 +1,6 @@
 /*
  * Deskflow -- mouse and keyboard sharing utility
- * SPDX-FileCopyrightText: (C) 2025 Deskflow Developers
+ * SPDX-FileCopyrightText: (C) 2025 - 2026 Deskflow Developers
  * SPDX-FileCopyrightText: (C) 2012 Symless Ltd.
  * SPDX-FileCopyrightText: (C) 2008 Volker Lanz <vl@fidra.de>
  * SPDX-License-Identifier: GPL-2.0-only WITH LicenseRef-OpenSSL-Exception
@@ -14,6 +14,7 @@
 #include "common/Settings.h"
 #include "gui/Messages.h"
 #include "gui/TlsUtility.h"
+#include "gui/core/NetworkMonitor.h"
 
 #include <QComboBox>
 #include <QDir>
@@ -48,6 +49,15 @@ SettingsDialog::SettingsDialog(QWidget *parent, const IServerConfig &serverConfi
   // force the first tab, since qt creator sets the active tab as the last one
   // the developer was looking at, and it's easy to accidentally save that.
   ui->tabWidget->setCurrentIndex(0);
+
+  // Populate the list of IP addresses
+  NetworkMonitor networkMonitor(this);
+  for (const auto &address : networkMonitor.getAvailableIPv4Addresses()) {
+    QString ipString = address;
+    if (ui->comboInterface->findText(ipString) == -1) {
+      ui->comboInterface->addItem(ipString, ipString);
+    }
+  }
 
   loadFromConfig();
 
@@ -160,7 +170,7 @@ void SettingsDialog::updateText()
 void SettingsDialog::accept()
 {
   Settings::setValue(Settings::Core::Port, ui->sbPort->value());
-  Settings::setValue(Settings::Core::Interface, ui->lineInterface->text());
+  Settings::setValue(Settings::Core::Interface, ui->comboInterface->currentData());
   Settings::setValue(Settings::Log::Level, ui->comboLogLevel->currentIndex());
   Settings::setValue(Settings::Log::ToFile, ui->cbLogToFile->isChecked());
   Settings::setValue(Settings::Log::File, ui->lineLogFilename->text());
@@ -176,10 +186,11 @@ void SettingsDialog::accept()
   Settings::setValue(Settings::Gui::CloseToTray, ui->cbCloseToTray->isChecked());
   Settings::setValue(Settings::Gui::SymbolicTrayIcon, ui->rbIconMono->isChecked());
   Settings::setValue(Settings::Security::CheckPeers, ui->cbRequireClientCert->isChecked());
-  Settings::setValue(Settings::Client::ScrollSpeed, ui->sbScrollSpeed->value());
+  Settings::setValue(Settings::Client::YScrollScale, ui->sbYScrollScale->value());
   Settings::setValue(Settings::Core::Language, I18N::nativeTo639Name(ui->comboLanguage->currentText()));
   Settings::setValue(Settings::Log::GuiDebug, ui->cbGuiDebug->isChecked());
   Settings::setValue(Settings::Core::UseWlClipboard, ui->cbUseWlClipboard->isChecked());
+  Settings::setValue(Settings::Gui::ShowVersionInTitle, ui->cbShowVersion->isChecked());
 
   Settings::ProcessMode mode;
   if (ui->groupService->isChecked())
@@ -194,7 +205,6 @@ void SettingsDialog::accept()
 void SettingsDialog::loadFromConfig()
 {
   ui->sbPort->setValue(Settings::value(Settings::Core::Port).toInt());
-  ui->lineInterface->setText(Settings::value(Settings::Core::Interface).toString());
   ui->comboLogLevel->setCurrentIndex(Settings::value(Settings::Log::Level).toInt());
   ui->cbLogToFile->setChecked(Settings::value(Settings::Log::ToFile).toBool());
   ui->lineLogFilename->setText(Settings::value(Settings::Log::File).toString());
@@ -205,9 +215,10 @@ void SettingsDialog::loadFromConfig()
   ui->cbCloseToTray->setChecked(Settings::value(Settings::Gui::CloseToTray).toBool());
   ui->cbElevateDaemon->setChecked(Settings::value(Settings::Daemon::Elevate).toBool());
   ui->cbAutoUpdate->setChecked(Settings::value(Settings::Gui::AutoUpdateCheck).toBool());
-  ui->sbScrollSpeed->setValue(Settings::value(Settings::Client::ScrollSpeed).toInt());
+  ui->sbYScrollScale->setValue(Settings::value(Settings::Client::YScrollScale).toDouble());
   ui->cbGuiDebug->setChecked(Settings::value(Settings::Log::GuiDebug).toBool());
   ui->cbUseWlClipboard->setChecked(Settings::value(Settings::Core::UseWlClipboard).toBool());
+  ui->cbShowVersion->setChecked(Settings::value(Settings::Gui::ShowVersionInTitle).toBool());
 
   const auto processMode = Settings::value(Settings::Core::ProcessMode).value<Settings::ProcessMode>();
   ui->groupService->setChecked(processMode == Settings::ProcessMode::Service);
@@ -221,6 +232,10 @@ void SettingsDialog::loadFromConfig()
     ui->rbIconColorful->setChecked(true);
 
   ui->lblDebugWarning->setVisible(Settings::value(Settings::Log::Level).toInt() > 4);
+
+  ui->comboInterface->setCurrentText(Settings::value(Settings::Core::Interface).toString());
+  if (ui->comboInterface->currentIndex() < 0)
+    ui->comboInterface->setCurrentIndex(0);
 
   qDebug() << "load from config done";
   updateControls();
@@ -289,7 +304,7 @@ void SettingsDialog::updateControls()
   ui->buttonBox->button(QDialogButtonBox::Save)->setEnabled(writable);
 
   ui->sbPort->setEnabled(writable);
-  ui->lineInterface->setEnabled(writable);
+  ui->comboInterface->setEnabled(writable);
   ui->comboLogLevel->setEnabled(writable);
   ui->cbLogToFile->setEnabled(writable);
   ui->cbAutoHide->setEnabled(writable);

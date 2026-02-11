@@ -1,5 +1,6 @@
 /*
  * Deskflow -- mouse and keyboard sharing utility
+ * SPDX-FileCopyrightText: (C) 2026 Deskflow Developers
  * SPDX-FileCopyrightText: (C) 2012 - 2016 Symless Ltd.
  * SPDX-FileCopyrightText: (C) 2004 Chris Schoeneman
  * SPDX-License-Identifier: GPL-2.0-only WITH LicenseRef-OpenSSL-Exception
@@ -18,7 +19,7 @@ subclasses to implement the rest.
 class PlatformScreen : public IPlatformScreen
 {
 public:
-  explicit PlatformScreen(IEventQueue *events, bool invertScrollDirection);
+  explicit PlatformScreen(IEventQueue *events);
   ~PlatformScreen() override = default;
 
   // IScreen overrides
@@ -43,7 +44,7 @@ public:
   void fakeMouseButton(ButtonID id, bool press) override = 0;
   void fakeMouseMove(int32_t x, int32_t y) override = 0;
   void fakeMouseRelativeMove(int32_t dx, int32_t dy) const override = 0;
-  void fakeMouseWheel(int32_t xDelta, int32_t yDelta) const override = 0;
+  void fakeMouseWheel(ScrollDelta delta) const override = 0;
 
   // IKeyState overrides
   void updateKeyMap() override;
@@ -96,13 +97,6 @@ protected:
   void handleSystemEvent(const Event &event) override = 0;
 
   /*!
-   * \brief mapClientScrollDirection
-   * Convert scroll according to client scroll directio
-   * \return converted value according to the client scroll direction
-   */
-  virtual int32_t mapClientScrollDirection(int32_t) const;
-
-  /*!
   Converts a sides mask (e.g. LeftMask | RightMask) to a string representation (e.g. "LR").
    */
   static std::string sidesMaskToString(uint32_t sides);
@@ -114,4 +108,11 @@ private:
    * This member is used only on client side.
    */
   bool m_invertScrollDirection = false;
+
+  /**
+   * @brief m_yScrollScale
+   * This member is used to scale the y scroll speed
+   * It is only used on the client side
+   */
+  double m_yScrollScale = 1.0;
 };

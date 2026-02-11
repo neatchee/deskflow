@@ -1,10 +1,11 @@
 /*
  * Deskflow -- mouse and keyboard sharing utility
+ * SPDX-FileCopyrightText: (C) 2026 Deskflow Developers
  * SPDX-FileCopyrightText: (C) 2012 - 2025 Symless Ltd.
  * SPDX-License-Identifier: GPL-2.0-only WITH LicenseRef-OpenSSL-Exception
  */
 
-#include "deskflow/DaemonApp.h"
+#include "DaemonApp.h"
 
 #include "arch/Arch.h"
 #include "base/IEventQueue.h"
@@ -12,12 +13,11 @@
 #include "base/LogOutputters.h"
 #include "common/ExitCodes.h"
 #include "common/Settings.h"
-#include "deskflow/App.h"
 #include "deskflow/ipc/DaemonIpcServer.h"
 
 #if SYSAPI_WIN32
 
-#include "arch/win32/ArchMiscWindows.h" // IWYU pragma: keep
+#include "arch/win32/ArchDaemonWindows.h"
 #include "deskflow/Screen.h"
 #include "platform/MSWindowsDebugOutputter.h"
 #include "platform/MSWindowsEventQueueBuffer.h"
@@ -28,17 +28,9 @@
 
 #endif
 
-#include <filesystem>
-#include <iostream>
 #include <string>
 
 using namespace deskflow::core;
-
-void showHelp(int argc, char **argv) // NOSONAR - CLI args
-{
-  const auto binName = argc > 0 ? std::filesystem::path(argv[0]).filename().string() : kDaemonBinName;
-  std::cout << "Usage: " << binName << " [-f|--foreground] [--install] [--uninstall]" << std::endl;
-}
 
 DaemonApp::DaemonApp(IEventQueue &events) : m_events(events)
 {
@@ -96,10 +88,10 @@ void DaemonApp::clearWatchdogCommand()
 void DaemonApp::clearSettings() const
 {
   LOG_INFO("clearing daemon settings");
-  Settings::setValue(Settings::Daemon::Command, QVariant());
-  Settings::setValue(Settings::Daemon::Elevate, QVariant());
-  Settings::setValue(Settings::Daemon::LogFile, QVariant());
-  Settings::setValue(Settings::Daemon::LogLevel, QVariant());
+  Settings::setValue(Settings::Daemon::Command);
+  Settings::setValue(Settings::Daemon::Elevate);
+  Settings::setValue(Settings::Daemon::LogFile);
+  Settings::setValue(Settings::Daemon::LogLevel);
 }
 
 void DaemonApp::connectIpcServer(const ipc::DaemonIpcServer *ipcServer) const
@@ -164,7 +156,7 @@ int DaemonApp::daemonLoop()
 {
 #if SYSAPI_WIN32
   // Runs the daemon through the Windows service controller, which controls the program lifecycle.
-  return ArchMiscWindows::runDaemon([this]() { return mainLoop(); });
+  return ArchDaemonWindows::runDaemon([this]() { return mainLoop(); });
 #elif SYSAPI_UNIX
   return mainLoop();
 #endif
@@ -177,9 +169,8 @@ int DaemonApp::mainLoop()
     LOG_ERR("watchdog not initialized");
     return s_exitFailed;
   }
+  ArchDaemonWindows::daemonRunning(true);
 #endif
-
-  DAEMON_RUNNING(true);
 
   try {
 #if SYSAPI_WIN32
@@ -211,9 +202,9 @@ int DaemonApp::mainLoop()
   } catch (...) { // NOSONAR - Catching remaining exceptions
     LOG_CRIT("daemon stop watchdog unknown error");
   }
+  ArchDaemonWindows::daemonRunning(false);
 #endif
 
-  DAEMON_RUNNING(false);
   return s_exitSuccess;
 }
 

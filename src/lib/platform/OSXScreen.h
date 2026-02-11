@@ -43,7 +43,7 @@ class Mutex;
 class OSXScreen : public PlatformScreen
 {
 public:
-  OSXScreen(IEventQueue *events, bool isPrimary, bool enableLangSync = false, bool invertScrolling = false);
+  OSXScreen(IEventQueue *events, bool isPrimary, bool enableLangSync = false);
 
   virtual ~OSXScreen();
 
@@ -74,7 +74,7 @@ public:
   void fakeMouseButton(ButtonID id, bool press) override;
   void fakeMouseMove(int32_t x, int32_t y) override;
   void fakeMouseRelativeMove(int32_t dx, int32_t dy) const override;
-  void fakeMouseWheel(int32_t xDelta, int32_t yDelta) const override;
+  void fakeMouseWheel(ScrollDelta delta) const override;
 
   // IPlatformScreen overrides
   void enable() override;
@@ -138,9 +138,6 @@ private:
 
   // map mac scroll wheel value to a deskflow scroll wheel value
   int32_t mapScrollWheelToDeskflow(int32_t) const;
-
-  // map deskflow scroll wheel value to a mac scroll wheel value
-  int32_t mapScrollWheelFromDeskflow(int32_t) const;
 
   // get the current scroll wheel speed
   double getScrollSpeed() const;

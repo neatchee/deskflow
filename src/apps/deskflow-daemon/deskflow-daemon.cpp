@@ -5,13 +5,14 @@
  * SPDX-License-Identifier: GPL-2.0-only WITH LicenseRef-OpenSSL-Exception
  */
 
-#include "VersionInfo.h"
+#include "DaemonApp.h"
+
 #include "arch/Arch.h"
 #include "base/EventQueue.h"
 #include "base/Log.h"
 #include "common/ExitCodes.h"
 #include "common/Settings.h"
-#include "deskflow/DaemonApp.h"
+#include "common/VersionInfo.h"
 #include "deskflow/ipc/DaemonIpcServer.h"
 
 #if SYSAPI_WIN32

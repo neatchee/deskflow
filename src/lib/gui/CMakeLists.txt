@@ -1,5 +1,5 @@
-# SPDX-FileCopyrightText: 2024 Deskflow Developers
-# SPDX-FileCopyrightText: 2024 Symless Ltd
+# SPDX-FileCopyrightText: (C) 2024 Deskflow Developers
+# SPDX-FileCopyrightText: (C) 2024 Symless Ltd
 # SPDX-License-Identifier: MIT
 
 set(target gui)
@@ -34,7 +34,6 @@ add_library(${target} STATIC
   Messages.h
   ScreenSetupModel.cpp
   ScreenSetupModel.h
-  Styles.h
   StyleUtils.h
   TlsUtility.cpp
   TlsUtility.h
@@ -51,10 +50,10 @@ add_library(${target} STATIC
   config/ServerConfig.h
   core/ClientConnection.cpp
   core/ClientConnection.h
-  core/CommandProcess.cpp
-  core/CommandProcess.h
   core/CoreProcess.cpp
   core/CoreProcess.h
+  core/NetworkMonitor.cpp
+  core/NetworkMonitor.h
   core/ServerConnection.cpp
   core/ServerConnection.h
   core/ServerMessage.cpp
@@ -115,6 +114,8 @@ add_library(${target} STATIC
   widgets/NewScreenWidget.h
   widgets/ScreenSetupView.cpp
   widgets/ScreenSetupView.h
+  widgets/SearchWidget.h
+  widgets/SearchWidget.cpp
   widgets/TrashScreenWidget.cpp
   widgets/TrashScreenWidget.h
 )

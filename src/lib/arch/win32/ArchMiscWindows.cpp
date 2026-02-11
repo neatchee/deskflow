@@ -1,5 +1,6 @@
 /*
  * Deskflow -- mouse and keyboard sharing utility
+ * SPDX-FileCopyrightText: (C) 2026 Deskflow Developers
  * SPDX-FileCopyrightText: (C) 2012 - 2016, 2024 - 2025 Symless Ltd.
  * SPDX-FileCopyrightText: (C) 2002 Chris Schoeneman
  * SPDX-License-Identifier: GPL-2.0-only WITH LicenseRef-OpenSSL-Exception
@@ -7,7 +8,6 @@
 
 #include "arch/win32/ArchMiscWindows.h"
 
-#include "arch/win32/ArchDaemonWindows.h"
 #include "arch/win32/XArchWindows.h"
 #include "base/Log.h"
 #include "base/String.h"
@@ -17,6 +17,7 @@
 
 #include <array>
 #include <filesystem>
+#include <stdexcept>
 
 // Useful for debugging Windows specific bootstrapping code before the logging system is initialized.
 // This output can be viewed by attaching a Microsoft debugger or by using the DebugView program.
@@ -62,26 +63,6 @@ void ArchMiscWindows::init()
 {
   // stop windows system error dialogs from showing.
   SetErrorMode(SEM_FAILCRITICALERRORS);
-}
-
-int ArchMiscWindows::runDaemon(RunFunc runFunc)
-{
-  return ArchDaemonWindows::runDaemon(runFunc);
-}
-
-void ArchMiscWindows::daemonRunning(bool running)
-{
-  ArchDaemonWindows::daemonRunning(running);
-}
-
-void ArchMiscWindows::daemonFailed(int result)
-{
-  ArchDaemonWindows::daemonFailed(result);
-}
-
-UINT ArchMiscWindows::getDaemonQuitMessage()
-{
-  return ArchDaemonWindows::getDaemonQuitMessage();
 }
 
 HKEY ArchMiscWindows::openKey(HKEY key, const TCHAR *keyName)
@@ -178,20 +159,16 @@ ArchMiscWindows::EValueType ArchMiscWindows::typeOfValue(HKEY key, const TCHAR *
 
 void ArchMiscWindows::setValue(HKEY key, const TCHAR *name, const std::string &value)
 {
-  assert(key != nullptr);
   if (key == nullptr) {
-    // TODO: throw exception
-    return;
+    throw std::invalid_argument("Registry key cannot be nullptr");
   }
   RegSetValueEx(key, name, 0, REG_SZ, reinterpret_cast<const BYTE *>(value.c_str()), (DWORD)value.size() + 1);
 }
 
 void ArchMiscWindows::setValue(HKEY key, const TCHAR *name, DWORD value)
 {
-  assert(key != nullptr);
   if (key == nullptr) {
-    // TODO: throw exception
-    return;
+    throw std::invalid_argument("Registry key cannot be nullptr");
   }
   RegSetValueEx(key, name, 0, REG_DWORD, reinterpret_cast<CONST BYTE *>(&value), sizeof(DWORD));
 }

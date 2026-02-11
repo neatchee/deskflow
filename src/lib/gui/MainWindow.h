@@ -1,6 +1,7 @@
 /*
  * Deskflow -- mouse and keyboard sharing utility
- * SPDX-FileCopyrightText: (C) 2024 Chris Rizzitello <sithord48@gmail.com>
+ * SPDX-FileCopyrightText: (C) 2025 Deskflow Developers
+ * SPDX-FileCopyrightText: (C) 2024 - 2026 Chris Rizzitello <sithord48@gmail.com>
  * SPDX-FileCopyrightText: (C) 2012 - 2024 Symless Ltd.
  * SPDX-FileCopyrightText: (C) 2008 Volker Lanz <vl@fidra.de>
  * SPDX-License-Identifier: GPL-2.0-only WITH LicenseRef-OpenSSL-Exception
@@ -8,6 +9,7 @@
 
 #pragma once
 
+#include <QHostAddress>
 #include <QMainWindow>
 #include <QMutex>
 #include <QProcess>
@@ -20,6 +22,7 @@
 #include "config/ServerConfig.h"
 #include "gui/core/ClientConnection.h"
 #include "gui/core/CoreProcess.h"
+#include "gui/core/NetworkMonitor.h"
 #include "gui/core/ServerConnection.h"
 #include "gui/core/WaylandWarnings.h"
 #include "net/Fingerprint.h"
@@ -58,6 +61,7 @@ class MainWindow : public QMainWindow
 {
   using CoreMode = Settings::CoreMode;
   using CoreProcess = deskflow::gui::CoreProcess;
+  using NetworkMonitor = deskflow::gui::NetworkMonitor;
 
   Q_OBJECT
 
@@ -152,6 +156,8 @@ private:
   void toggleCanRunCore(bool enableButtons);
   void remoteHostChanged(const QString &newRemoteHost);
   void handleNewClientPromptRequest(const QString &clientName, bool usePeerAuth);
+  void updateIpLabel(const QStringList &addresses);
+
   /**
    * @brief showClientError
    * @param error Error Type
@@ -218,4 +224,12 @@ private:
   QAction *m_actionStartCore = nullptr;
   QAction *m_actionRestartCore = nullptr;
   QAction *m_actionStopCore = nullptr;
+
+  // Network monitoring
+  NetworkMonitor *m_networkMonitor = nullptr;
+  QString m_currentIpAddress;
+
+  // Server IP strategy optimization
+  QStringList m_serverStartIPs;
+  QString m_serverStartSuggestedIP;
 };

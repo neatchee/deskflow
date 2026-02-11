@@ -1,6 +1,6 @@
 /*
  * Deskflow -- mouse and keyboard sharing utility
- * SPDX-FileCopyrightText: (C) 2025 Deskflow Developers
+ * SPDX-FileCopyrightText: (C) 2025 - 2026 Deskflow Developers
  * SPDX-FileCopyrightText: (C) 2012 - 2016 Symless Ltd.
  * SPDX-FileCopyrightText: (C) 2002 Chris Schoeneman
  * SPDX-License-Identifier: GPL-2.0-only WITH LicenseRef-OpenSSL-Exception
@@ -81,10 +81,8 @@
 HINSTANCE MSWindowsScreen::s_windowInstance = nullptr;
 MSWindowsScreen *MSWindowsScreen::s_screen = nullptr;
 
-MSWindowsScreen::MSWindowsScreen(
-    bool isPrimary, bool useHooks, IEventQueue *events, bool enableLangSync, bool invertScrolling
-)
-    : PlatformScreen(events, invertScrolling),
+MSWindowsScreen::MSWindowsScreen(bool isPrimary, bool useHooks, IEventQueue *events, bool enableLangSync)
+    : PlatformScreen(events),
       m_isPrimary(isPrimary),
       m_useHooks(useHooks),
       m_isOnScreen(m_isPrimary),
@@ -543,7 +541,7 @@ void MSWindowsScreen::saveMousePosition(int32_t x, int32_t y)
   m_xCursor = x;
   m_yCursor = y;
 
-  LOG_DEBUG5("saved mouse position for next delta: %+d,%+d", x, y);
+  LOG_DEBUG2("saved mouse position for next delta: %+d,%+d", x, y);
 }
 
 uint32_t MSWindowsScreen::registerHotKey(KeyID key, KeyModifierMask mask)
@@ -716,11 +714,10 @@ void MSWindowsScreen::fakeMouseRelativeMove(int32_t dx, int32_t dy) const
   m_desks->fakeMouseRelativeMove(dx, dy);
 }
 
-void MSWindowsScreen::fakeMouseWheel(int32_t xDelta, int32_t yDelta) const
+void MSWindowsScreen::fakeMouseWheel(ScrollDelta delta) const
 {
-  xDelta = mapClientScrollDirection(xDelta);
-  yDelta = mapClientScrollDirection(yDelta);
-  m_desks->fakeMouseWheel(xDelta, yDelta);
+  delta = applyScrollModifier(delta);
+  m_desks->fakeMouseWheel(delta.x, delta.y);
 }
 
 void MSWindowsScreen::updateKeys()
@@ -891,7 +888,7 @@ bool MSWindowsScreen::onPreDispatch(HWND hwnd, UINT message, WPARAM wParam, LPAR
 
 bool MSWindowsScreen::onPreDispatchPrimary(HWND, UINT message, WPARAM wParam, LPARAM lParam)
 {
-  LOG_DEBUG5("handling pre-dispatch primary");
+  LOG_DEBUG2("handling pre-dispatch primary");
 
   // handle event
   switch (message) {
@@ -973,7 +970,8 @@ bool MSWindowsScreen::onEvent(HWND, UINT msg, WPARAM wParam, LPARAM lParam, LRES
   /* On windows 10 we don't receive WM_POWERBROADCAST after sleep.
    We receive only WM_TIMECHANGE hence this message is used to resume.*/
   case WM_TIMECHANGE:
-    m_events->addEvent(Event(EventTypes::ScreenResume, getEventTarget(), nullptr, Event::EventFlags::DeliverImmediately)
+    m_events->addEvent( //
+        Event(EventTypes::ScreenResume, getEventTarget(), nullptr, Event::EventFlags::DeliverImmediately)
     );
     break;
 
@@ -1243,7 +1241,7 @@ bool MSWindowsScreen::onMouseMove(int32_t mx, int32_t my)
   int32_t x = mx - m_xCursor;
   int32_t y = my - m_yCursor;
 
-  LOG_DEBUG3("mouse move - motion delta: %+d=(%+d - %+d),%+d=(%+d - %+d)", x, mx, m_xCursor, y, my, m_yCursor);
+  LOG_DEBUG2("mouse move - motion delta: %+d=(%+d - %+d),%+d=(%+d - %+d)", x, mx, m_xCursor, y, my, m_yCursor);
 
   // ignore if the mouse didn't move or if message posted prior
   // to last mark change.
@@ -1262,7 +1260,7 @@ bool MSWindowsScreen::onMouseMove(int32_t mx, int32_t my)
     // center on the server screen. if we don't do this, then the mouse
     // will always try to return to the original entry point on the
     // secondary screen.
-    LOG_DEBUG5("centering cursor on motion: %+d,%+d", m_xCenter, m_yCenter);
+    LOG_DEBUG2("centering cursor on motion: %+d,%+d", m_xCenter, m_yCenter);
     warpCursorNoFlush(m_xCenter, m_yCenter);
 
     // examine the motion.  if it's about the distance
@@ -1523,13 +1521,13 @@ ButtonID MSWindowsScreen::mapButtonFromEvent(WPARAM msg, LPARAM button) const
     switch (button) {
     case XBUTTON1:
       if (GetSystemMetrics(SM_CMOUSEBUTTONS) >= 4) {
-        return kButtonExtra0 + 0;
+        return kButtonExtra0;
       }
       break;
 
     case XBUTTON2:
       if (GetSystemMetrics(SM_CMOUSEBUTTONS) >= 5) {
-        return kButtonExtra0 + 1;
+        return kButtonExtra1;
       }
       break;
     }

@@ -1,6 +1,6 @@
-# SPDX-FileCopyrightText: 2024 - 2025 Deskflow Developers
-# SPDX-FileCopyrightText: 2012 - 2024 Symless Ltd
-# SPDX-FileCopyrightText: 2009 - 2012 Nick Bolton
+# SPDX-FileCopyrightText: (C) 2024 - 2026 Deskflow Developers
+# SPDX-FileCopyrightText: (C) 2012 - 2024 Symless Ltd
+# SPDX-FileCopyrightText: (C) 2009 - 2012 Nick Bolton
 # SPDX-License-Identifier: MIT
 
 cmake_minimum_required(VERSION 3.24)
@@ -39,45 +39,28 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
     #       to check if there are no tags, but we have a `continuous` tag. So instead we have to
     #       try to get the latest annotated tag, fail quietly, and check if the variable changed
     execute_process(
-      COMMAND ${GIT_EXECUTABLE} describe --tags --abbrev=0
+      COMMAND ${GIT_EXECUTABLE} describe --long --match v* --always
       WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-      OUTPUT_VARIABLE GIT_LATEST_TAG
+      OUTPUT_VARIABLE GITREV
       ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
     )
-    message(STATUS ${GIT_LATEST_TAG})
-    if(GIT_LATEST_TAG EQUAL 0)
-      set(DESKFLOW_VERSION_TWEAK "9999")
+    string(FIND "${GITREV}" "v" isRev)
+    if(NOT ${isRev} EQUAL -1)
+      string(REGEX MATCH [0-9]+ MAJOR ${GITREV})
+      string(REGEX MATCH \\.[0-9]+ MINOR ${GITREV})
+      string(REPLACE "." "" MINOR "${MINOR}")
+      string(REGEX MATCH [0-9]+\- PATCH ${GITREV})
+      string(REPLACE "-" "" PATCH "${PATCH}")
+      string(REGEX MATCH \-[0-9]+\- TWEAK ${GITREV})
+      string(REPLACE "-" "" TWEAK "${TWEAK}")
+      set(DESKFLOW_VERSION_MAJOR ${MAJOR})
+      set(DESKFLOW_VERSION_MINOR ${MINOR})
+      set(DESKFLOW_VERSION_PATCH ${PATCH})
+      set(DESKFLOW_VERSION_TWEAK ${TWEAK})
     else()
-      execute_process(
-        COMMAND ${GIT_EXECUTABLE} describe --long --match v* --always
-        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-        OUTPUT_VARIABLE GITREV
-        ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
-      )
-      string(FIND "${GITREV}" "v" isRev)
-      if(NOT ${isRev} EQUAL -1)
-        string(REGEX MATCH [0-9]+ MAJOR ${GITREV})
-        string(REGEX MATCH \\.[0-9]+ MINOR ${GITREV})
-        string(REPLACE "." "" MINOR "${MINOR}")
-        string(REGEX MATCH [0-9]+\- PATCH ${GITREV})
-        string(REPLACE "-" "" PATCH "${PATCH}")
-        string(REGEX MATCH \-[0-9]+\- TWEAK ${GITREV})
-        string(REPLACE "-" "" TWEAK "${TWEAK}")
-        set(DESKFLOW_VERSION_MAJOR ${MAJOR})
-        set(DESKFLOW_VERSION_MINOR ${MINOR})
-        set(DESKFLOW_VERSION_PATCH ${PATCH})
-        set(DESKFLOW_VERSION_TWEAK ${TWEAK})
-      elseif(NOT ${GITREV} STREQUAL "")
-        execute_process(
-          COMMAND ${GIT_EXECUTABLE} rev-list refs/tags/${GIT_LATEST_TAG}..HEAD --count
-          WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-          OUTPUT_VARIABLE COUNT_COMMITS
-          ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
-        )
-        message(STATUS ${COUNT_COMMITS})
-        set(DESKFLOW_VERSION_TWEAK ${COUNT_COMMITS})
-      endif()
+      set(DESKFLOW_VERSION_TWEAK "9999")
     endif()
+    unset(GITREV)
   endif()
 endif()
 
@@ -102,7 +85,7 @@ project(
 # Define Additional "PROJECT" vars for packaging and metadata
 set(CMAKE_PROJECT_PROPER_NAME "Deskflow")
 set(CMAKE_PROJECT_VENDOR "${CMAKE_PROJECT_PROPER_NAME} Devs")
-set(CMAKE_PROJECT_COPYRIGHT "(C) 2024-2025 ${CMAKE_PROJECT_VENDOR}")
+set(CMAKE_PROJECT_COPYRIGHT "(C) 2024-2026 ${CMAKE_PROJECT_VENDOR}")
 set(CMAKE_PROJECT_CONTACT "${CMAKE_PROJECT_PROPER_NAME} <maintainers@deskflow.org>")
 set(CMAKE_PROJECT_REV_FQDN "org.deskflow.deskflow")
 

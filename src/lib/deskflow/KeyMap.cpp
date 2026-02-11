@@ -88,7 +88,7 @@ void KeyMap::addKeyEntry(const KeyItem &item)
   // add item list
   entries.push_back(items);
   LOG(
-      (CLOG_DEBUG5 "add key: %04x %d %03x %04x (%04x %04x %04x)%s", newItem.m_id, newItem.m_group, newItem.m_button,
+      (CLOG_DEBUG2 "add key: %04x %d %03x %04x (%04x %04x %04x)%s", newItem.m_id, newItem.m_group, newItem.m_button,
        newItem.m_client, newItem.m_required, newItem.m_sensitive, newItem.m_generates, newItem.m_dead ? " dead" : "")
   );
 }
@@ -947,8 +947,9 @@ void KeyMap::addKeystrokes(
 
   case kKeystrokeRepeat:
     if (deskflow::platform::isWindows()) {
-      // Windows repeat needs this
       keystrokes.push_back(Keystroke(button, false, true, data));
+      keystrokes.push_back(Keystroke(button, true, true, data));
+    } else if (deskflow::platform::isMac()) {
       keystrokes.push_back(Keystroke(button, true, true, data));
     }
     break;

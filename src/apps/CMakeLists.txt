@@ -1,6 +1,6 @@
-# SPDX-FileCopyrightText: 2024 Deskflow Developers
-# SPDX-FileCopyrightText: 2012 - 2024 Symless Ltd
-# SPDX-FileCopyrightText: 2009 - 2012 Nick Bolton
+# SPDX-FileCopyrightText: (C) 2024 Deskflow Developers
+# SPDX-FileCopyrightText: (C) 2012 - 2024 Symless Ltd
+# SPDX-FileCopyrightText: (C) 2009 - 2012 Nick Bolton
 # SPDX-License-Identifier: MIT
 
 if(UNIX AND NOT APPLE)
@@ -29,10 +29,10 @@ function(generate_app_man TARGET NAME)
 endfunction()
 
 set(WIN32_PRE_EXCLUDE_REGEXES
-    "api-ms-win-.*"
-    "ext-ms-.*"
-    "^hvsifiletrust\\.dll$"
-    "^icu.*\\.dll$"
+  "api-ms-win-.*"
+  "ext-ms-.*"
+  "^hvsifiletrust\\.dll$"
+  "^icu.*\\.dll$"
 )
 
 set(WIN32_POST_EXCLUDE_REGEXES ".*system32.*")

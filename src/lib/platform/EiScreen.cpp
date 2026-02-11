@@ -1,6 +1,6 @@
 /*
  * Deskflow -- mouse and keyboard sharing utility
- * SPDX-FileCopyrightText: (C) 2025 Deskflow Developers
+ * SPDX-FileCopyrightText: (C) 2025 - 2026 Deskflow Developers
  * SPDX-FileCopyrightText: (C) 2024 Symless Ltd.
  * SPDX-FileCopyrightText: (C) 2022 Red Hat, Inc.
  * SPDX-License-Identifier: GPL-2.0-only WITH LicenseRef-OpenSSL-Exception
@@ -36,8 +36,8 @@ struct ScrollRemainder
 
 namespace deskflow {
 
-EiScreen::EiScreen(bool isPrimary, IEventQueue *events, bool usePortal, bool invertScrolling)
-    : PlatformScreen{events, invertScrolling},
+EiScreen::EiScreen(bool isPrimary, IEventQueue *events, bool usePortal)
+    : PlatformScreen{events},
       m_isPrimary{isPrimary},
       m_events{events},
       m_clipboard{new WlClipboardCollection()},
@@ -313,17 +313,16 @@ void EiScreen::fakeMouseRelativeMove(int32_t dx, int32_t dy) const
   ei_device_frame(m_eiPointer, ei_now(m_ei));
 }
 
-void EiScreen::fakeMouseWheel(int32_t xDelta, int32_t yDelta) const
+void EiScreen::fakeMouseWheel(ScrollDelta delta) const
 {
   if (!m_eiPointer)
     return;
 
-  xDelta = mapClientScrollDirection(xDelta);
-  yDelta = mapClientScrollDirection(yDelta);
+  delta = applyScrollModifier(delta);
   // libei and deskflow seem to use opposite directions, so we have
   // to send EI the opposite of the value received if we want to remain
   // compatible with other platforms (including X11).
-  ei_device_scroll_discrete(m_eiPointer, -xDelta, -yDelta);
+  ei_device_scroll_discrete(m_eiPointer, -delta.x, -delta.y);
   ei_device_frame(m_eiPointer, ei_now(m_ei));
 }
 
@@ -621,18 +620,26 @@ void EiScreen::onKeyEvent(ei_event *event)
   bool pressed = ei_event_keyboard_get_key_is_press(event);
   KeyID keyid = m_keyState->mapKeyFromKeyval(keyval);
   auto keybutton = static_cast<KeyButton>(keyval);
+  bool repeat;
 
   m_keyState->updateXkbState(keyval, pressed);
   KeyModifierMask mask = m_keyState->pollActiveModifiers();
 
-  LOG_DEBUG1("event: key %s keycode=%d keyid=%d mask=0x%x", pressed ? "press" : "release", keycode, keyid, mask);
+  repeat = pressed && m_lastPressed == keyid && keyid != kKeyNone;
+
+  m_lastPressed = pressed ? keyid : kKeyNone;
+
+  LOG_DEBUG1(
+      "event: key %s%s keycode=%d keyid=%d mask=0x%x", pressed ? "press" : "release", repeat ? " (repeat)" : "",
+      keycode, keyid, mask
+  );
 
   if (m_isPrimary && onHotkey(keyid, pressed, mask)) {
     return;
   }
 
   if (keyid != kKeyNone) {
-    m_keyState->sendKeyEvent(getEventTarget(), pressed, false, keyid, mask, 1, keybutton);
+    m_keyState->sendKeyEvent(getEventTarget(), pressed, repeat, keyid, mask, 1, keybutton);
   }
 }
 
