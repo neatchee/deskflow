@@ -19,9 +19,6 @@ var annotated_dup =
         [ "ipc", "namespacedeskflow_1_1gui_1_1ipc.html", [
           [ "DaemonIpcClient", "classdeskflow_1_1gui_1_1ipc_1_1DaemonIpcClient.html", "classdeskflow_1_1gui_1_1ipc_1_1DaemonIpcClient" ]
         ] ],
-        [ "core", "namespacedeskflow_1_1gui_1_1core.html", [
-          [ "WaylandWarnings", "classdeskflow_1_1gui_1_1core_1_1WaylandWarnings.html", "classdeskflow_1_1gui_1_1core_1_1WaylandWarnings" ]
-        ] ],
         [ "messages", "namespacedeskflow_1_1gui_1_1messages.html", [
           [ "Errors", "structdeskflow_1_1gui_1_1messages_1_1Errors.html", "structdeskflow_1_1gui_1_1messages_1_1Errors" ]
         ] ],
@@ -122,6 +119,7 @@ var annotated_dup =
     [ "ChunkType", "structChunkType.html", "structChunkType" ],
     [ "Client", "classClient.html", "classClient" ],
     [ "ClientApp", "classClientApp.html", "classClientApp" ],
+    [ "ClientConfigDialog", "classClientConfigDialog.html", "classClientConfigDialog" ],
     [ "ClientInfo", "classClientInfo.html", "classClientInfo" ],
     [ "ClientListener", "classClientListener.html", "classClientListener" ],
     [ "ClientProxy", "classClientProxy.html", "classClientProxy" ],
@@ -284,6 +282,7 @@ var annotated_dup =
     [ "SocketWithWhatException", "classSocketWithWhatException.html", "classSocketWithWhatException" ],
     [ "Ssl", "structSsl.html", "structSsl" ],
     [ "SslLogger", "classSslLogger.html", "classSslLogger" ],
+    [ "StatusBar", "classStatusBar.html", "classStatusBar" ],
     [ "StopLogOutputter", "classStopLogOutputter.html", "classStopLogOutputter" ],
     [ "Stopwatch", "classStopwatch.html", "classStopwatch" ],
     [ "StreamBuffer", "classStreamBuffer.html", "classStreamBuffer" ],

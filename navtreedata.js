@@ -25,19 +25,19 @@
 var NAVTREE =
 [
   [ "Deskflow", "index.html", [
-    [ "Building Deskflow", "md_doc_2dev_2build.html", [
-      [ "Configuration", "md_doc_2dev_2build.html#autotoc_md1", [
-        [ "Windows Configuration", "md_doc_2dev_2build.html#autotoc_md2", [
-          [ "Windows and Qt", "md_doc_2dev_2build.html#autotoc_md3", [
-            [ "System Qt", "md_doc_2dev_2build.html#autotoc_md4", null ],
-            [ "vcpkg managed Qt", "md_doc_2dev_2build.html#autotoc_md5", null ]
+    [ "Building Deskflow", "md_docs_2dev_2build.html", [
+      [ "Configuration", "md_docs_2dev_2build.html#autotoc_md1", [
+        [ "Windows Configuration", "md_docs_2dev_2build.html#autotoc_md2", [
+          [ "Windows and Qt", "md_docs_2dev_2build.html#autotoc_md3", [
+            [ "System Qt", "md_docs_2dev_2build.html#autotoc_md4", null ],
+            [ "vcpkg managed Qt", "md_docs_2dev_2build.html#autotoc_md5", null ]
           ] ]
         ] ],
-        [ "macOS codesign", "md_doc_2dev_2build.html#autotoc_md6", null ]
+        [ "macOS codesign", "md_docs_2dev_2build.html#autotoc_md6", null ]
       ] ],
-      [ "Build", "md_doc_2dev_2build.html#autotoc_md7", null ],
-      [ "Install", "md_doc_2dev_2build.html#autotoc_md8", null ],
-      [ "Making Deskflow packages", "md_doc_2dev_2build.html#autotoc_md9", null ]
+      [ "Build", "md_docs_2dev_2build.html#autotoc_md7", null ],
+      [ "Install", "md_docs_2dev_2build.html#autotoc_md8", null ],
+      [ "Making Deskflow packages", "md_docs_2dev_2build.html#autotoc_md9", null ]
     ] ],
     [ "Contributing to Deskflow", "contributing_guide.html", [
       [ "Read the Full Guidelines", "contributing_guide.html#autotoc_md10", null ]
@@ -128,29 +128,29 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "AboutDialog_8cpp.html",
-"DirectionTypes_8h.html#a1702cf626a6f3bc79a7db1382e2fbba9",
-"KeyTypes_8h.html#a46479cae53a6eb6ee0e891518666ac12",
-"MSWindowsDesks_8cpp.html#a8ff6dc91b2706c1be762576867b4da7d",
-"OSXKeyState_8cpp.html#a8ad213e888adb067b810522d15d37c54",
-"SslLogger_8h_source.html",
-"classAppUtilUnix.html#ad494eae903b08c6c6c43cdf01167c067",
-"classArchNetworkWinsock.html#a953e1d9ef4c182a17b976a460a36dede",
-"classClientProxy1__3.html#a3b1f7c3c5048c2fda127f97512589221",
-"classIArchLog.html#a419dbbe5623dbdc36fd34b62a78fcf56",
-"classIPlatformScreen.html#ab9dbeacd59ceda2a193a84ac17d2b5a8",
-"classKeySequenceWidget.html#a0e7ddc9f7b1fb5a7a7aa05c1524e88c1",
-"classMSWindowsScreen.html#a9d102cc1b8c4971f83c007d0649f8784",
-"classPlatformScreen.html#a093a4c52fa3287d575986c88d66278b1",
-"classScreenUnavailableException.html#a185349a8f8fa458724b76b2f1ad1e419",
-"classSimpleEventQueueBuffer.html#a34a5b80110085fe4f9e0b0a0a1089bcc",
-"classWlClipboard.html#acd1ae109f2e3a1d6c57da140c28d83ca",
-"classXWindowsUtil.html#aca62fbe907ff6c95b6081258b10f3f0f",
-"classdeskflow_1_1KeyMap_1_1Keystroke.html",
-"classdeskflow_1_1gui_1_1CoreProcess.html#adab780bcb932ba53c90fc6f6b1f25467a65004ae0dc2e9512cfa7d0e6dbcdab1e",
-"classdeskflow_1_1server_1_1ConfigReadContext.html#a0acbd253d8976071d35a0caeceb3a1eb",
-"functions_func_m.html",
-"namespacedeskflow.html#a34787a880fd439e02383f336665d7bc2a793b6080c7b0badaa569b76f0988d139",
-"structSettings_1_1Client.html#ad698d8035f8fb5bce2e895b5502a590e"
+"Diagnostic_8h.html",
+"KeyTypes_8h.html#a43357810a7dfe9d948d4aa7fbcc83c43",
+"MSWindowsDesks_8cpp.html#a8365c5fe4c638efc320611d3e6dbc8f7",
+"OSXKeyState_8cpp.html#a4b0ad8af86e283641f771684ed7ab7b9",
+"SpacesValidator_8cpp.html",
+"classAppUtil.html#ac93b079bc128e2513fc28862914cb89c",
+"classArchNetworkWinsock.html#a65f438085f2811f98c32ea07818e7112",
+"classClientProxy1__1.html#a4dc51659792af35f1af159ce806af23f",
+"classIApp.html#a7712f4b015fc1460746949580ecc759a",
+"classIPlatformScreen.html#a5d060719edee3f6aa7db8051730fb1f6",
+"classKeySequence.html#a7b089f34b9ff2aa00efaba61fe005abd",
+"classMSWindowsScreen.html#a628e5ed225fa31c0181091357f499726",
+"classPacketStreamFilter.html",
+"classScreenSetupView.html#a3bf747fea4659b6634afebdaec0d0944",
+"classSettings.html#ae251f1cdec2bce2dbbf133c18550888c",
+"classUnicode.html#a6cf183d92569cbd9d50211908810ffec",
+"classXWindowsScreen.html#ac62d6b5b8242feb2819086a550d23836",
+"classdeskflow_1_1KeyMap.html#aa20482dc7cf49a36c89397da1d3001ec",
+"classdeskflow_1_1gui_1_1CoreProcess.html#ab305459e98593bc76e894c883f70cb9f",
+"classdeskflow_1_1server_1_1Config.html#afb04dc32eaa76da1b5a2c303b516c24e",
+"functions_func_h.html",
+"namespacedeskflow.html#a34787a880fd439e02383f336665d7bc2a662eedb3d21ec748ac1199d4357c8bd5",
+"structKeyNameMapEntry.html#a20a386e1901cc1f45d400cbac569ea8e"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';
