@@ -34,8 +34,10 @@ public:
 
   struct Client
   {
-    inline static const auto InvertScrollDirection = QStringLiteral("client/invertScrollDirection");
+    inline static const auto InvertYScroll = QStringLiteral("client/invertYScroll");
+    inline static const auto InvertXScroll = QStringLiteral("client/invertXScroll");
     inline static const auto YScrollScale = QStringLiteral("client/yScrollScale");
+    inline static const auto XScrollScale = QStringLiteral("client/xScrollScale");
     inline static const auto LanguageSync = QStringLiteral("client/languageSync");
     inline static const auto RemoteHost = QStringLiteral("client/remoteHost");
     inline static const auto XdpRestoreToken = QStringLiteral("client/xdpRestoreToken");
@@ -75,7 +77,6 @@ public:
     inline static const auto LogExpanded = QStringLiteral("gui/logExpanded");
     inline static const auto SymbolicTrayIcon = QStringLiteral("gui/symbolicTrayIcon");
     inline static const auto WindowGeometry = QStringLiteral("gui/windowGeometry");
-    inline static const auto ShowGenericClientFailureDialog = QStringLiteral("gui/showGenericClientFailureDialog");
     inline static const auto ShownFirstConnectedMessage = QStringLiteral("gui/shownFirstConnectedMessage");
     inline static const auto ShownServerFirstStartMessage = QStringLiteral("gui/shownServerFirstStartMessage");
     inline static const auto ShowVersionInTitle = QStringLiteral("gui/showVersionInTitle");
@@ -129,10 +130,12 @@ public:
   static QVariant value(const QString &key = QString());
   static void restoreDefaultSettings();
   static QVariant defaultValue(const QString &key);
+  static bool isServerConfigFileReadable();
   static bool isWritable();
   static bool isPortableMode();
   static QString settingsFile();
   static QString settingsPath();
+  static QString serverConfigFile();
   static QString tlsDir();
   static QString tlsTrustedServersDb();
   static QString tlsTrustedClientsDb();
@@ -191,10 +194,12 @@ private:
   };
 
   inline static const QStringList m_validKeys = {
-      Settings::Client::InvertScrollDirection
+      Settings::Client::InvertYScroll
+    , Settings::Client::InvertXScroll
     , Settings::Client::LanguageSync
     , Settings::Client::RemoteHost
     , Settings::Client::YScrollScale
+    , Settings::Client::XScrollScale
     , Settings::Client::XdpRestoreToken
     , Settings::Core::CoreMode
     , Settings::Core::Interface
@@ -211,6 +216,7 @@ private:
     , Settings::Daemon::Command
     , Settings::Daemon::Elevate
     , Settings::Daemon::LogFile
+    , Settings::Daemon::LogLevel
     , Settings::Log::File
     , Settings::Log::Level
     , Settings::Log::ToFile
@@ -224,7 +230,6 @@ private:
     , Settings::Gui::LogExpanded
     , Settings::Gui::SymbolicTrayIcon
     , Settings::Gui::WindowGeometry
-    , Settings::Gui::ShowGenericClientFailureDialog
     , Settings::Gui::ShownFirstConnectedMessage
     , Settings::Gui::ShownServerFirstStartMessage
     , Settings::Gui::ShowVersionInTitle
@@ -246,7 +251,8 @@ private:
     , Settings::Core::PreventSleep
     , Settings::Core::UseWlClipboard
     , Settings::Server::ExternalConfig
-    , Settings::Client::InvertScrollDirection
+    , Settings::Client::InvertYScroll
+    , Settings::Client::InvertXScroll
     , Settings::Log::ToFile
     , Settings::Log::GuiDebug
   };
@@ -259,7 +265,6 @@ private:
     , Settings::Gui::CloseReminder
     , Settings::Gui::LogExpanded
     , Settings::Gui::SymbolicTrayIcon
-    , Settings::Gui::ShowGenericClientFailureDialog
     , Settings::Security::TlsEnabled
     , Settings::Security::CheckPeers
   };

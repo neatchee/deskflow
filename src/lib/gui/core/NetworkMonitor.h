@@ -47,10 +47,17 @@ public:
   void stopMonitoring();
 
   /**
-   * @brief Get list of all available IPv4 addresses (excluding local and link-local addresses)
-   * @return IPv4 address list
+   * @brief Get list of all available IP addresses (excluding local and link-local addresses)
+   * @return IP address list
    */
-  QStringList getAvailableIPv4Addresses() const;
+  static QStringList validAddresses();
+
+  /**
+   * @brief Check if a network interface is virtual
+   * @param interfaceName Network interface name
+   * @return true if it's a virtual interface
+   */
+  static bool isVirtualInterface(const QString &interfaceName);
 
 Q_SIGNALS:
   /**
@@ -61,13 +68,6 @@ Q_SIGNALS:
 
 private:
   void setIpAddresses(const QStringList &newAddresses);
-
-  /**
-   * @brief Check if a network interface is virtual
-   * @param interfaceName Network interface name
-   * @return true if it's a virtual interface
-   */
-  bool isVirtualInterface(const QString &interfaceName) const;
 
   /**
    * @brief Update current network status

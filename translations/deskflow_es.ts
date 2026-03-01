@@ -140,6 +140,53 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>ClientConfigDialog</name>
+    <message>
+        <source>Client Configuration</source>
+        <translation type="unfinished">Configuración del cliente</translation>
+    </message>
+    <message>
+        <source>Use server&apos;s keyboard language on this computer</source>
+        <translation type="unfinished">Utilice el idioma del teclado del servidor en esta computadora</translation>
+    </message>
+    <message>
+        <source>Scroll Modifiers</source>
+        <translation type="unfinished">Modificadores de desplazamiento</translation>
+    </message>
+    <message>
+        <source>Invert</source>
+        <translation type="unfinished">Invertir</translation>
+    </message>
+    <message>
+        <source>Horizontal Scroll</source>
+        <translation type="unfinished">Desplazamiento horizontal</translation>
+    </message>
+    <message>
+        <source>Vertical Scroll</source>
+        <translation type="unfinished">Desplazamiento vertical</translation>
+    </message>
+    <message>
+        <source>Scale</source>
+        <translation type="unfinished">Escala</translation>
+    </message>
+    <message>
+        <source>Close and save changes</source>
+        <translation type="unfinished">Cerrar y guardar los cambios</translation>
+    </message>
+    <message>
+        <source>Close and forget changes</source>
+        <translation type="unfinished">Cerrar y olvidar los cambios</translation>
+    </message>
+    <message>
+        <source>Reset to stored values</source>
+        <translation type="unfinished">Restablecer los valores almacenados</translation>
+    </message>
+    <message>
+        <source>Reset to default values</source>
+        <translation type="unfinished">Restablecer valores predeterminados</translation>
+    </message>
+</context>
+<context>
     <name>FingerprintDialog</name>
     <message>
         <source>Local Fingerprints</source>
@@ -284,14 +331,6 @@ Do you want to connect to the server?
         <translation type="unfinished">Debes seleccionar un modo</translation>
     </message>
     <message>
-        <source>Server IP or hostname:</source>
-        <translation type="unfinished">IP del servidor o nombre de host:</translation>
-    </message>
-    <message>
-        <source>Hostname or IP address of the server computer.</source>
-        <translation type="unfinished">Nombre de host o dirección IP del ordenador servidor.</translation>
-    </message>
-    <message>
         <source>&amp;Start</source>
         <translation type="unfinished">&amp;Comenzar</translation>
     </message>
@@ -348,20 +387,12 @@ Do you want to connect to the server?
         <translation type="unfinished">Ctrl+T</translation>
     </message>
     <message>
+        <source>&lt;p&gt;Failed to connect to the server &apos;%1&apos;.&lt;/p&gt;&lt;p&gt;A Client with your name is already connected to the server.&lt;/p&gt;Please ensure that you&apos;re using a unique name and that only a single instance of the client process is running.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;Error al conectar con el servidor &apos;%1&apos;.&lt;/p&gt;&lt;p&gt;A Client with your name is already connected to the server.&lt;/p&gt;Please ensure that you&apos;re using a unique name and that only a single instance of the client process is running.&lt;/p&gt;</translation>
+    </message>
+    <message>
         <source>Your current TLS key is smaller than the minimum allowed size, A new key 2048-bit key will be generated.</source>
         <translation type="unfinished">Su clave TLS actual es más pequeña que el tamaño mínimo permitido. Se generará una nueva clave de 2048 bits.</translation>
-    </message>
-    <message>
-        <source>View local fingerprint</source>
-        <translation type="unfinished">Ver huella digital local</translation>
-    </message>
-    <message>
-        <source>Update available</source>
-        <translation type="unfinished">Actualización disponible</translation>
-    </message>
-    <message>
-        <source>A new version v%1 is available</source>
-        <translation type="unfinished">Ya está disponible una nueva versión v%1</translation>
     </message>
     <message>
         <source>Address missing</source>
@@ -370,10 +401,6 @@ Do you want to connect to the server?
     <message>
         <source>Please enter the hostname or IP address of the other computer.</source>
         <translation type="unfinished">Introduzca el nombre de host o la dirección IP de la otra computadora.</translation>
-    </message>
-    <message>
-        <source>Core cannot be started</source>
-        <translation type="unfinished">No se puede iniciar el núcleo</translation>
     </message>
     <message>
         <source>Save server configuration as...</source>
@@ -404,12 +431,8 @@ Do you want to connect to the server?
         <translation type="unfinished">Desconectar</translation>
     </message>
     <message>
-        <source>%1 Encryption Enabled</source>
-        <translation type="unfinished">%1 Cifrado habilitado</translation>
-    </message>
-    <message>
-        <source>Encryption Disabled</source>
-        <translation type="unfinished">Cifrado deshabilitado</translation>
+        <source>%1 Connection Error</source>
+        <translation>%1 Error de conexión</translation>
     </message>
     <message>
         <source>No IP Detected</source>
@@ -462,40 +485,8 @@ La dirección IP asignada ahora no es válida; es posible que deba reiniciar el 
         <translation type="unfinished">&amp;Ayuda</translation>
     </message>
     <message>
-        <source>%1 is starting...</source>
-        <translation type="unfinished">%1 está iniciando...</translation>
-    </message>
-    <message>
         <source>invalid certificate, generating a new one</source>
         <translation type="unfinished">certificado no válido, generando uno nuevo</translation>
-    </message>
-    <message>
-        <source>%1 will retry in a moment...</source>
-        <translation type="unfinished">%1 lo intentará nuevamente en un momento...</translation>
-    </message>
-    <message>
-        <source>%1 is stopping...</source>
-        <translation type="unfinished">%1 se está deteniendo...</translation>
-    </message>
-    <message>
-        <source>%1 is not running</source>
-        <translation type="unfinished">%1 no se está ejecutando</translation>
-    </message>
-    <message>
-        <source>%1 is waiting for clients</source>
-        <translation type="unfinished">%1 está esperando clientes</translation>
-    </message>
-    <message>
-        <source>%1 is connecting...</source>
-        <translation type="unfinished">%1 se está conectando...</translation>
-    </message>
-    <message>
-        <source>%1 is connected as client of %2</source>
-        <translation type="unfinished">%1 está conectado como cliente de %2</translation>
-    </message>
-    <message>
-        <source>%1 is disconnected</source>
-        <translation type="unfinished">%1 está desconectado</translation>
     </message>
     <message>
         <source>Ctrl+Q</source>
@@ -524,27 +515,41 @@ Nombres válidos:
 • También puede usar _ o -
 • Tengan entre 1 y 255 caracteres</translation>
     </message>
-    <message numerus="yes">
-        <source>%1 is connected, with %n client(s): %2</source>
-        <extracomment>Shown when in server mode and at least 1 client is connected %1 is replaced by the app name %2 will be a list of at least one client %n will be replaced by the number of clients (n is &gt;=1), it is not requried to be in the translation</extracomment>
-        <translation type="unfinished">
-            <numerusform>%1 está conectado, con un cliente: %2</numerusform>
-            <numerusform>%1 está conectado, con %n clientes: %2</numerusform>
-        </translation>
-    </message>
-    <message>
-        <source>Clients:
- %1</source>
-        <translation type="unfinished">Clientes:
- %1</translation>
-    </message>
     <message>
         <source>This computer&apos;s name:</source>
         <translation type="unfinished">Nombre de esta computadora:</translation>
     </message>
     <message>
-        <source>The Core executable could not be successfully started, although it does exist. Please check if you have sufficient permissions to run this program.</source>
-        <translation type="unfinished">No se pudo iniciar el archivo ejecutable principal, aunque existe. Compruebe si tiene permisos suficientes para ejecutar este programa.</translation>
+        <source>&amp;Configure Client</source>
+        <translation type="unfinished">&amp;Configurar cliente</translation>
+    </message>
+    <message>
+        <source>Connect to:</source>
+        <translation type="unfinished">Conectarse a:</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;Hostname or IP address of the server computer.&lt;br/&gt;May contain a comma seperated list.&lt;/html&gt;</source>
+        <translation type="unfinished">&lt;html&gt;Nome host o indirizzo IP del computer server.&lt;br/&gt;Può contenere un elenco separato da virgole.&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>read</source>
+        <translation type="unfinished">leer</translation>
+    </message>
+    <message>
+        <source>read and write</source>
+        <translation type="unfinished">leer y escribir</translation>
+    </message>
+    <message>
+        <source>The Core executable could not be started.
+Please check if you have sufficient permissions to run %1.</source>
+        <translation type="unfinished">No se pudo iniciar el ejecutable Core.
+Verifique si tiene permisos suficientes para ejecutar %1.</translation>
+    </message>
+    <message>
+        <source>
+Additionally, check you are able to %1 the server config file: %2</source>
+        <translation type="unfinished">
+Además, verifique que puede %1 el archivo de configuración del servidor: %2</translation>
     </message>
 </context>
 <context>
@@ -557,10 +562,6 @@ Nombres válidos:
 </context>
 <context>
     <name>QObject</name>
-    <message>
-        <source>%1 is already running</source>
-        <translation type="unfinished">%1 ya se está ejecutando</translation>
-    </message>
     <message>
         <source>fatal error</source>
         <translation type="unfinished">error fatal</translation>
@@ -630,30 +631,6 @@ Nombres válidos:
         <translation type="unfinished">%1 Conectado</translation>
     </message>
     <message>
-        <source>&lt;p&gt;Failed to connect to the server &apos;%1&apos;.&lt;/p&gt;</source>
-        <translation type="unfinished">&lt;p&gt;Error al conectar con el servidor &apos;%1&apos;.&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;A Client with your name is already connected to the server.&lt;/p&gt;Please ensure that you&apos;re using a unique name and that only a single instance of the client process is running.&lt;/p&gt;</source>
-        <translation type="unfinished">&lt;p&gt;Ya hay un cliente conectado al servidor con su nombre.&lt;/p&gt;Asegúrese de utilizar un nombre único y de que solo se esté ejecutando una única instancia del proceso del cliente.&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Please try to connect to the server using the server IP address instead of the hostname. &lt;/p&gt;&lt;p&gt;If that doesn&apos;t work, please check your TLS and firewall settings.&lt;/p&gt;</source>
-        <translation type="unfinished">&lt;p&gt;Intente conectarse al servidor usando la dirección IP del servidor en lugar del nombre de host.&lt;/p&gt;&lt;p&gt;Si eso no funciona, verifique la configuración de TLS y firewall.&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Please check your TLS and firewall settings.&lt;/p&gt;</source>
-        <translation type="unfinished">&lt;p&gt;Por favor revise su configuración de TLS y firewall.&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>%1 Connection Error</source>
-        <translation type="unfinished">%1 Error de conexión</translation>
-    </message>
-    <message>
-        <source>Do not show this message again</source>
-        <translation type="unfinished">No volver a mostrar este mensaje</translation>
-    </message>
-    <message>
         <source>%1 - New Client</source>
         <translation type="unfinished">%1 - Nuevo cliente</translation>
     </message>
@@ -688,10 +665,6 @@ Nombres válidos:
     <message>
         <source>&lt;p&gt;Settings are read-only because you only have read access to the file:&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;</source>
         <translation type="unfinished">&lt;p&gt;Las configuraciones son de solo lectura porque solo tiene acceso de lectura al archivo:&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Sorry, while this version of %1 does support Wayland, this build was not linked with one or more of the required libraries.&lt;/p&gt;&lt;p&gt;Please either switch to X from your login screen or use a build that uses the correct libraries.&lt;/p&gt;&lt;p&gt;If you think this is incorrect, please &lt;a href=&quot;%2&quot;&gt;report a bug&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Please check the logs for more information.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Lo sentimos, aunque esta versión de %1 es compatible con Wayland, esta compilación no se vinculó con una o más de las bibliotecas requeridas.&lt;/p&gt;&lt;p&gt;Cambie a X desde su pantalla de inicio de sesión o use una compilación que use las bibliotecas correctas.&lt;/p&gt;&lt;p&gt;Si cree que esto es incorrecto, &lt;a href=&quot;%2&quot;&gt;informe un error&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Consulte los registros para obtener más información.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>No thanks</source>
@@ -739,6 +712,10 @@ Nombres válidos:
         <source>failed to read RSA key from certificate file: %1</source>
         <extracomment>%1 will be replaced by the certificate path</extracomment>
         <translation type="unfinished">No se pudo leer la clave RSA del archivo de certificado: %1</translation>
+    </message>
+    <message>
+        <source>%1 is already running</source>
+        <translation type="unfinished">%1 ya se está ejecutando</translation>
     </message>
 </context>
 <context>
@@ -1101,22 +1078,6 @@ Al habilitar esta opción, se deshabilitará la interfaz gráfica de usuario (GU
         <translation type="unfinished">Preferencias</translation>
     </message>
     <message>
-        <source>&amp;Regular</source>
-        <translation type="unfinished">&amp;Regular</translation>
-    </message>
-    <message>
-        <source>Client mode</source>
-        <translation type="unfinished">Modo cliente</translation>
-    </message>
-    <message>
-        <source>Use server&apos;s keyboard language on this computer</source>
-        <translation type="unfinished">Utilice el idioma del teclado del servidor en esta computadora</translation>
-    </message>
-    <message>
-        <source>App</source>
-        <translation type="unfinished">Aplicación</translation>
-    </message>
-    <message>
         <source>Check for updates on startup</source>
         <translation type="unfinished">Buscar actualizaciones al iniciar</translation>
     </message>
@@ -1169,10 +1130,6 @@ Al habilitar esta opción, se deshabilitará la interfaz gráfica de usuario (GU
         <translation type="unfinished">&amp;Avanzado</translation>
     </message>
     <message>
-        <source>Networking</source>
-        <translation type="unfinished">Redes</translation>
-    </message>
-    <message>
         <source>Port</source>
         <translation type="unfinished">Puerto</translation>
     </message>
@@ -1181,16 +1138,8 @@ Al habilitar esta opción, se deshabilitará la interfaz gráfica de usuario (GU
         <translation type="unfinished">IP de red</translation>
     </message>
     <message>
-        <source>Logs</source>
-        <translation type="unfinished">Registros</translation>
-    </message>
-    <message>
         <source>Log path</source>
         <translation type="unfinished">Ruta de registro</translation>
-    </message>
-    <message>
-        <source>Log to file</source>
-        <translation type="unfinished">Registrar en archivo</translation>
     </message>
     <message>
         <source>Fatal</source>
@@ -1273,6 +1222,22 @@ Al habilitar esta opción, se deshabilitará la interfaz gráfica de usuario (GU
         <translation type="unfinished">Salida de depuración detallada</translation>
     </message>
     <message>
+        <source>Close and save changes</source>
+        <translation type="unfinished">Cerrar y guardar los cambios</translation>
+    </message>
+    <message>
+        <source>Close and forget changes</source>
+        <translation type="unfinished">Cerrar y olvidar los cambios</translation>
+    </message>
+    <message>
+        <source>Reset to stored values</source>
+        <translation type="unfinished">Restablecer los valores almacenados</translation>
+    </message>
+    <message>
+        <source>Reset to default values</source>
+        <translation type="unfinished">Restablecer valores predeterminados</translation>
+    </message>
+    <message>
         <source>TLS Certificate Regenerated</source>
         <translation type="unfinished">Certificado TLS regenerado</translation>
     </message>
@@ -1317,12 +1282,89 @@ Al habilitar esta opción, se deshabilitará la interfaz gráfica de usuario (GU
         <translation type="unfinished">Incluir la versión en el título de la ventana</translation>
     </message>
     <message>
-        <source>Invert vertical scroll direction on this computer</source>
-        <translation type="unfinished">Invertir la dirección del desplazamiento vertical en este ordenador</translation>
+        <source>Log to file</source>
+        <translation>Registrar en archivo</translation>
     </message>
     <message>
-        <source>Vertical Scroll Scale</source>
-        <translation type="unfinished">Escala de desplazamiento vertical</translation>
+        <source>&amp;Logs</source>
+        <translation>&amp;Registro</translation>
+    </message>
+    <message>
+        <source>&amp;General</source>
+        <translation type="unfinished">&amp;General</translation>
+    </message>
+    <message>
+        <source>&amp;Network</source>
+        <translation>R&amp;ed</translation>
+    </message>
+</context>
+<context>
+    <name>StatusBar</name>
+    <message>
+        <source>%1 is not running</source>
+        <translation type="unfinished">%1 no se está ejecutando</translation>
+    </message>
+    <message>
+        <source>%1 is starting...</source>
+        <translation type="unfinished">%1 está iniciando...</translation>
+    </message>
+    <message>
+        <source>%1 will retry in a moment...</source>
+        <translation type="unfinished">%1 lo intentará nuevamente en un momento...</translation>
+    </message>
+    <message>
+        <source>%1 is stopping...</source>
+        <translation type="unfinished">%1 se está deteniendo...</translation>
+    </message>
+    <message>
+        <source>%1 is waiting for clients</source>
+        <translation type="unfinished">%1 está esperando clientes</translation>
+    </message>
+    <message>
+        <source>%1 is connecting...</source>
+        <translation type="unfinished">%1 se está conectando...</translation>
+    </message>
+    <message>
+        <source>%1 is connected as client of %2</source>
+        <translation type="unfinished">%1 está conectado como cliente de %2</translation>
+    </message>
+    <message>
+        <source>%1 is disconnected</source>
+        <translation type="unfinished">%1 está desconectado</translation>
+    </message>
+    <message numerus="yes">
+        <source>%1 is connected, with %n client(s): %2</source>
+        <extracomment>Shown when in server mode and at least 1 client is connected %1 is replaced by the app name %2 will be a list of at least one client %n will be replaced by the number of clients (n is &gt;=1), it is not requried to be in the translation</extracomment>
+        <translation>
+            <numerusform>%1 está conectado, con un cliente: %2</numerusform>
+            <numerusform>%1 está conectado, con %n clientes: %2</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Clients:
+ %1</source>
+        <translation type="unfinished">Clientes:
+ %1</translation>
+    </message>
+    <message>
+        <source>A new version v%1 is available</source>
+        <translation type="unfinished">Ya está disponible una nueva versión v%1</translation>
+    </message>
+    <message>
+        <source>View local fingerprint</source>
+        <translation type="unfinished">Ver huella digital local</translation>
+    </message>
+    <message>
+        <source>Update available</source>
+        <translation type="unfinished">Actualización disponible</translation>
+    </message>
+    <message>
+        <source>%1 Encryption Enabled</source>
+        <translation type="unfinished">%1 Cifrado habilitado</translation>
+    </message>
+    <message>
+        <source>Encryption Disabled</source>
+        <translation type="unfinished">Cifrado deshabilitado</translation>
     </message>
 </context>
 <context>

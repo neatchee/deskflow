@@ -140,6 +140,53 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>ClientConfigDialog</name>
+    <message>
+        <source>Client Configuration</source>
+        <translation type="unfinished">Конфигурация клиента</translation>
+    </message>
+    <message>
+        <source>Use server&apos;s keyboard language on this computer</source>
+        <translation type="unfinished">Использовать язык клавиатуры сервера на этом компьютере</translation>
+    </message>
+    <message>
+        <source>Scroll Modifiers</source>
+        <translation type="unfinished">Модификаторы прокрутки</translation>
+    </message>
+    <message>
+        <source>Invert</source>
+        <translation type="unfinished">Инвертировать</translation>
+    </message>
+    <message>
+        <source>Horizontal Scroll</source>
+        <translation type="unfinished">Горизонтальная прокрутка</translation>
+    </message>
+    <message>
+        <source>Vertical Scroll</source>
+        <translation type="unfinished">Вертикальная прокрутка</translation>
+    </message>
+    <message>
+        <source>Scale</source>
+        <translation type="unfinished">Шкала</translation>
+    </message>
+    <message>
+        <source>Close and save changes</source>
+        <translation type="unfinished">Закрыть и сохранить изменения</translation>
+    </message>
+    <message>
+        <source>Close and forget changes</source>
+        <translation type="unfinished">Закройте изменения и забудьте о них</translation>
+    </message>
+    <message>
+        <source>Reset to stored values</source>
+        <translation type="unfinished">Сбросить до сохраненных значений</translation>
+    </message>
+    <message>
+        <source>Reset to default values</source>
+        <translation type="unfinished">Сбросить до значений по умолчанию</translation>
+    </message>
+</context>
+<context>
     <name>FingerprintDialog</name>
     <message>
         <source>Local Fingerprints</source>
@@ -288,14 +335,6 @@ Do you want to connect to the server?
         <translation>Необходимо выбрать режим</translation>
     </message>
     <message>
-        <source>Server IP or hostname:</source>
-        <translation>IP-адрес или имя хоста сервера:</translation>
-    </message>
-    <message>
-        <source>Hostname or IP address of the server computer.</source>
-        <translation>Имя хоста или IP-адрес сервера.</translation>
-    </message>
-    <message>
         <source>&amp;Start</source>
         <translation>&amp;Запуск</translation>
     </message>
@@ -312,20 +351,12 @@ Do you want to connect to the server?
         <translation>недействительный сертификат, создание нового</translation>
     </message>
     <message>
-        <source>A new version v%1 is available</source>
-        <translation>Доступна новая версия v%1</translation>
-    </message>
-    <message>
         <source>Address missing</source>
         <translation>Адрес не указан</translation>
     </message>
     <message>
         <source>Please enter the hostname or IP address of the other computer.</source>
         <translation>Пожалуйста, введите имя хоста или IP-адрес другого компьютера.</translation>
-    </message>
-    <message>
-        <source>Core cannot be started</source>
-        <translation>Не удалось запустить ядро</translation>
     </message>
     <message>
         <source>Save server configuration as...</source>
@@ -356,12 +387,8 @@ Do you want to connect to the server?
         <translation>Отключиться</translation>
     </message>
     <message>
-        <source>%1 Encryption Enabled</source>
-        <translation>Шифрование %1 включено</translation>
-    </message>
-    <message>
-        <source>Encryption Disabled</source>
-        <translation>Шифрование отключено</translation>
+        <source>&lt;p&gt;Failed to connect to the server &apos;%1&apos;.&lt;/p&gt;&lt;p&gt;A Client with your name is already connected to the server.&lt;/p&gt;Please ensure that you&apos;re using a unique name and that only a single instance of the client process is running.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;Не удалось подключиться к серверу &apos;%1&apos;.&lt;/p&gt;&lt;p&gt;Клиент с таким именем уже подключен к серверу.&lt;/p&gt;Убедитесь, что вы используете уникальное имя и запущен только один процесс клиента.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>No IP Detected</source>
@@ -392,38 +419,6 @@ Do you want to connect to the server?
 A bound IP is now invalid, you may need to restart the server.</source>
         <translation>
 Привязанный IP-адрес стал недействительным. Возможно требуется перезапуск сервера.</translation>
-    </message>
-    <message>
-        <source>%1 is starting...</source>
-        <translation>%1 запускается...</translation>
-    </message>
-    <message>
-        <source>%1 will retry in a moment...</source>
-        <translation>%1 скоро повторит попытку...</translation>
-    </message>
-    <message>
-        <source>%1 is stopping...</source>
-        <translation>%1 останавливается...</translation>
-    </message>
-    <message>
-        <source>%1 is not running</source>
-        <translation>%1 не запущен</translation>
-    </message>
-    <message>
-        <source>%1 is waiting for clients</source>
-        <translation>%1 ожидает подключения клиентов</translation>
-    </message>
-    <message>
-        <source>%1 is connecting...</source>
-        <translation>%1 подключается...</translation>
-    </message>
-    <message>
-        <source>%1 is connected as client of %2</source>
-        <translation>%1 подключен как клиент к %2</translation>
-    </message>
-    <message>
-        <source>%1 is disconnected</source>
-        <translation>%1 отключен</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -495,14 +490,6 @@ A bound IP is now invalid, you may need to restart the server.</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <source>View local fingerprint</source>
-        <translation>Показать локальный отпечаток</translation>
-    </message>
-    <message>
-        <source>Update available</source>
-        <translation>Доступно обновление</translation>
-    </message>
-    <message>
         <source>Invalid Screen Name</source>
         <translation>Недопустимое имя экрана</translation>
     </message>
@@ -524,28 +511,45 @@ Valid names:
 • Можно использовать _ или -
 • Длина от 1 до 255 символов</translation>
     </message>
-    <message numerus="yes">
-        <source>%1 is connected, with %n client(s): %2</source>
-        <extracomment>Shown when in server mode and at least 1 client is connected %1 is replaced by the app name %2 will be a list of at least one client %n will be replaced by the number of clients (n is &gt;=1), it is not requried to be in the translation</extracomment>
-        <translation>
-            <numerusform>%1 подключен к %n клиенту: %2</numerusform>
-            <numerusform>%1 подключен к %n клиентам: %2</numerusform>
-            <numerusform>%1 подключен к %n клиентам: %2</numerusform>
-        </translation>
-    </message>
     <message>
-        <source>Clients:
- %1</source>
-        <translation>Клиенты:
- %1</translation>
+        <source>%1 Connection Error</source>
+        <translation>Ошибка соединения %1</translation>
     </message>
     <message>
         <source>Suggested IP: </source>
         <translation>Рекомендуемый IP-адрес: </translation>
     </message>
     <message>
-        <source>The Core executable could not be successfully started, although it does exist. Please check if you have sufficient permissions to run this program.</source>
-        <translation>Не удалось запустить исполняемый файл ядра, хотя он существует. Проверьте наличие прав на запуск программы.</translation>
+        <source>&amp;Configure Client</source>
+        <translation type="unfinished">&amp;Настройка клиента</translation>
+    </message>
+    <message>
+        <source>Connect to:</source>
+        <translation type="unfinished">Подключиться к:</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;Hostname or IP address of the server computer.&lt;br/&gt;May contain a comma seperated list.&lt;/html&gt;</source>
+        <translation type="unfinished">&lt;html&gt;Имя хоста или IP-адрес серверного компьютера.&lt;br/&gt;Может содержать список, разделенный запятыми.&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>read</source>
+        <translation type="unfinished">прочитать</translation>
+    </message>
+    <message>
+        <source>read and write</source>
+        <translation type="unfinished">читать и записывать</translation>
+    </message>
+    <message>
+        <source>The Core executable could not be started.
+Please check if you have sufficient permissions to run %1.</source>
+        <translation type="unfinished">Не удалось запустить исполняемый файл Core.
+Проверьте, достаточно ли у вас прав для запуска %1.</translation>
+    </message>
+    <message>
+        <source>
+Additionally, check you are able to %1 the server config file: %2</source>
+        <translation type="unfinished">
+Также убедитесь, что вы можете %1 файл конфигурации сервера: %2</translation>
     </message>
 </context>
 <context>
@@ -558,10 +562,6 @@ Valid names:
 </context>
 <context>
     <name>QObject</name>
-    <message>
-        <source>%1 is already running</source>
-        <translation>%1 уже запущен</translation>
-    </message>
     <message>
         <source>fatal error</source>
         <translation>критическая ошибка</translation>
@@ -631,30 +631,6 @@ Valid names:
         <translation>%1 подключено</translation>
     </message>
     <message>
-        <source>&lt;p&gt;Failed to connect to the server &apos;%1&apos;.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Не удалось подключиться к серверу &apos;%1&apos;.&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;A Client with your name is already connected to the server.&lt;/p&gt;Please ensure that you&apos;re using a unique name and that only a single instance of the client process is running.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Клиент с таким именем уже подключен к серверу.&lt;/p&gt;Убедитесь, что вы используете уникальное имя и запущен только один процесс клиента.&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Please try to connect to the server using the server IP address instead of the hostname. &lt;/p&gt;&lt;p&gt;If that doesn&apos;t work, please check your TLS and firewall settings.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Попробуйте подключиться к серверу по IP-адресу вместо имени хоста. &lt;/p&gt;&lt;p&gt;Если это не поможет, проверьте настройки TLS и брандмауэра.&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Please check your TLS and firewall settings.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Пожалуйста, проверьте настройки TLS и брандмауэра.&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>%1 Connection Error</source>
-        <translation>Ошибка соединения %1</translation>
-    </message>
-    <message>
-        <source>Do not show this message again</source>
-        <translation>Больше не показывать это сообщение</translation>
-    </message>
-    <message>
         <source>%1 - New Client</source>
         <translation>%1 - Новый клиент</translation>
     </message>
@@ -689,10 +665,6 @@ Valid names:
     <message>
         <source>&lt;p&gt;Settings are read-only because you only have read access to the file:&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;</source>
         <translation>&lt;p&gt;Настройки доступны только для чтения, так как у вас есть доступ только на чтение к файлу:&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Sorry, while this version of %1 does support Wayland, this build was not linked with one or more of the required libraries.&lt;/p&gt;&lt;p&gt;Please either switch to X from your login screen or use a build that uses the correct libraries.&lt;/p&gt;&lt;p&gt;If you think this is incorrect, please &lt;a href=&quot;%2&quot;&gt;report a bug&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Please check the logs for more information.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Хотя эта версия %1 поддерживает Wayland, данная сборка не была слинкована с необходимыми библиотеками.&lt;/p&gt;&lt;p&gt;Пожалуйста, переключитесь на сессию X11 или используйте сборку с поддержкой нужных библиотек.&lt;/p&gt;&lt;p&gt;Если вы считаете это ошибкой, пожалуйста, &lt;a href=&quot;%2&quot;&gt;сообщите о ней&lt;/a&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>No thanks</source>
@@ -740,6 +712,10 @@ Valid names:
         <source>failed to read RSA key from certificate file: %1</source>
         <extracomment>%1 will be replaced by the certificate path</extracomment>
         <translation>не удалось прочитать RSA-ключ из файла сертификата: %1</translation>
+    </message>
+    <message>
+        <source>%1 is already running</source>
+        <translation>%1 уже запущен</translation>
     </message>
 </context>
 <context>
@@ -1100,22 +1076,6 @@ Enabling this setting will disable the server config GUI.</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <source>&amp;Regular</source>
-        <translation>&amp;Основные</translation>
-    </message>
-    <message>
-        <source>Client mode</source>
-        <translation>Режим клиента</translation>
-    </message>
-    <message>
-        <source>Use server&apos;s keyboard language on this computer</source>
-        <translation>Использовать язык клавиатуры сервера на этом компьютере</translation>
-    </message>
-    <message>
-        <source>App</source>
-        <translation>Приложение</translation>
-    </message>
-    <message>
         <source>Check for updates on startup</source>
         <translation>Проверять обновления при запуске</translation>
     </message>
@@ -1168,20 +1128,12 @@ Enabling this setting will disable the server config GUI.</source>
         <translation>&amp;Расширенные</translation>
     </message>
     <message>
-        <source>Networking</source>
-        <translation>Сеть</translation>
-    </message>
-    <message>
         <source>Port</source>
         <translation>Порт</translation>
     </message>
     <message>
         <source>Network IP</source>
         <translation>Сетевой IP-адрес</translation>
-    </message>
-    <message>
-        <source>Logs</source>
-        <translation>Журналы</translation>
     </message>
     <message>
         <source>Level</source>
@@ -1222,10 +1174,6 @@ Enabling this setting will disable the server config GUI.</source>
     <message>
         <source>Log path</source>
         <translation>Путь к журналам</translation>
-    </message>
-    <message>
-        <source>Log to file</source>
-        <translation>Записывать в файл</translation>
     </message>
     <message>
         <source>Using a Debug log level may affect performance. Only use a Debug level if you are attempting to debug an issue or are gathering logs to submit with a bug report.</source>
@@ -1304,6 +1252,22 @@ Enabling this setting will disable the server config GUI.</source>
         <translation>Подробный вывод отладки</translation>
     </message>
     <message>
+        <source>Close and save changes</source>
+        <translation type="unfinished">Закрыть и сохранить изменения</translation>
+    </message>
+    <message>
+        <source>Close and forget changes</source>
+        <translation type="unfinished">Закройте изменения и забудьте о них</translation>
+    </message>
+    <message>
+        <source>Reset to stored values</source>
+        <translation type="unfinished">Сбросить до сохраненных значений</translation>
+    </message>
+    <message>
+        <source>Reset to default values</source>
+        <translation type="unfinished">Сбросить до значений по умолчанию</translation>
+    </message>
+    <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Requires the wl-clipboard package&lt;/p&gt;&lt;p&gt;When using wl-clipboard v2.2.1, there is a focus stealing bug that may make Deskflow harder to use. This has been fixed when using the wl-clipboard master branch, unless your Compositor lacks wlroots-data-control protocol support.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Требуется пакет wl-clipboard. В версии 2.2.1 есть ошибка перехвата фокуса.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -1316,12 +1280,90 @@ Enabling this setting will disable the server config GUI.</source>
         <translation type="unfinished">Включить номер версии в заголовок окна</translation>
     </message>
     <message>
-        <source>Invert vertical scroll direction on this computer</source>
-        <translation type="unfinished">Инвертировать направление вертикальной прокрутки на этом компьютере</translation>
+        <source>Log to file</source>
+        <translation>Записывать в файл</translation>
     </message>
     <message>
-        <source>Vertical Scroll Scale</source>
-        <translation type="unfinished">Вертикальная шкала прокрутки</translation>
+        <source>&amp;Logs</source>
+        <translation>&amp;Журнал</translation>
+    </message>
+    <message>
+        <source>&amp;General</source>
+        <translation type="unfinished">&amp;Общий</translation>
+    </message>
+    <message>
+        <source>&amp;Network</source>
+        <translation>&amp;Сеть</translation>
+    </message>
+</context>
+<context>
+    <name>StatusBar</name>
+    <message>
+        <source>%1 is not running</source>
+        <translation>%1 не запущен</translation>
+    </message>
+    <message>
+        <source>%1 is starting...</source>
+        <translation>%1 запускается...</translation>
+    </message>
+    <message>
+        <source>%1 will retry in a moment...</source>
+        <translation>%1 скоро повторит попытку...</translation>
+    </message>
+    <message>
+        <source>%1 is stopping...</source>
+        <translation>%1 останавливается...</translation>
+    </message>
+    <message>
+        <source>%1 is waiting for clients</source>
+        <translation>%1 ожидает подключения клиентов</translation>
+    </message>
+    <message>
+        <source>%1 is connecting...</source>
+        <translation>%1 подключается...</translation>
+    </message>
+    <message>
+        <source>%1 is connected as client of %2</source>
+        <translation>%1 подключен как клиент к %2</translation>
+    </message>
+    <message>
+        <source>%1 is disconnected</source>
+        <translation>%1 отключен</translation>
+    </message>
+    <message numerus="yes">
+        <source>%1 is connected, with %n client(s): %2</source>
+        <extracomment>Shown when in server mode and at least 1 client is connected %1 is replaced by the app name %2 will be a list of at least one client %n will be replaced by the number of clients (n is &gt;=1), it is not requried to be in the translation</extracomment>
+        <translation>
+            <numerusform>%1 подключен к %n клиенту: %2</numerusform>
+            <numerusform>%1 подключен к %n клиентам: %2</numerusform>
+            <numerusform>%1 подключен к %n клиентам: %2</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Clients:
+ %1</source>
+        <translation>Клиенты:
+ %1</translation>
+    </message>
+    <message>
+        <source>A new version v%1 is available</source>
+        <translation>Доступна новая версия v%1</translation>
+    </message>
+    <message>
+        <source>View local fingerprint</source>
+        <translation>Показать локальный отпечаток</translation>
+    </message>
+    <message>
+        <source>Update available</source>
+        <translation>Доступно обновление</translation>
+    </message>
+    <message>
+        <source>%1 Encryption Enabled</source>
+        <translation>Шифрование %1 включено</translation>
+    </message>
+    <message>
+        <source>Encryption Disabled</source>
+        <translation>Шифрование отключено</translation>
     </message>
 </context>
 <context>

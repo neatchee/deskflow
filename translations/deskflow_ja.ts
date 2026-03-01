@@ -140,6 +140,53 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>ClientConfigDialog</name>
+    <message>
+        <source>Client Configuration</source>
+        <translation>クライアント設定</translation>
+    </message>
+    <message>
+        <source>Use server&apos;s keyboard language on this computer</source>
+        <translation>サーバー側のキーボード言語をこのコンピューターで使用する</translation>
+    </message>
+    <message>
+        <source>Scroll Modifiers</source>
+        <translation>スクロール設定</translation>
+    </message>
+    <message>
+        <source>Invert</source>
+        <translation>反転</translation>
+    </message>
+    <message>
+        <source>Horizontal Scroll</source>
+        <translation>水平スクロール</translation>
+    </message>
+    <message>
+        <source>Vertical Scroll</source>
+        <translation>垂直スクロール</translation>
+    </message>
+    <message>
+        <source>Scale</source>
+        <translation>倍率</translation>
+    </message>
+    <message>
+        <source>Close and save changes</source>
+        <translation>変更を保存して閉じる</translation>
+    </message>
+    <message>
+        <source>Close and forget changes</source>
+        <translation>変更を破棄して閉じる</translation>
+    </message>
+    <message>
+        <source>Reset to stored values</source>
+        <translation>変更前の値にリセットする</translation>
+    </message>
+    <message>
+        <source>Reset to default values</source>
+        <translation>デフォルト値にリセットする</translation>
+    </message>
+</context>
+<context>
     <name>FingerprintDialog</name>
     <message>
         <source>Local Fingerprints</source>
@@ -277,7 +324,7 @@ Do you want to connect to the server?
     </message>
     <message>
         <source>&amp;Configure Server</source>
-        <translation>サーバーを設定(&amp;C)</translation>
+        <translation>サーバー設定(&amp;C)</translation>
     </message>
     <message>
         <source>Export server configuration</source>
@@ -286,14 +333,6 @@ Do you want to connect to the server?
     <message>
         <source>You must select a mode</source>
         <translation>動作モードを選択してください</translation>
-    </message>
-    <message>
-        <source>Server IP or hostname:</source>
-        <translation>サーバーのIPアドレスかホスト名:</translation>
-    </message>
-    <message>
-        <source>Hostname or IP address of the server computer.</source>
-        <translation>サーバーのIPアドレスかホスト名</translation>
     </message>
     <message>
         <source>&amp;Start</source>
@@ -309,11 +348,7 @@ Do you want to connect to the server?
     </message>
     <message>
         <source>invalid certificate, generating a new one</source>
-        <translation type="unfinished">無効な証明書、新しい証明書を生成しています</translation>
-    </message>
-    <message>
-        <source>A new version v%1 is available</source>
-        <translation>新しいバージョン(v%1)が利用できます</translation>
+        <translation>無効な証明書、新しい証明書を生成しています</translation>
     </message>
     <message>
         <source>Address missing</source>
@@ -322,10 +357,6 @@ Do you want to connect to the server?
     <message>
         <source>Please enter the hostname or IP address of the other computer.</source>
         <translation>他のコンピューターのIPアドレスかホスト名を入力してください。</translation>
-    </message>
-    <message>
-        <source>Core cannot be started</source>
-        <translation>コアが起動できません</translation>
     </message>
     <message>
         <source>Save server configuration as...</source>
@@ -356,12 +387,8 @@ Do you want to connect to the server?
         <translation>切断</translation>
     </message>
     <message>
-        <source>%1 Encryption Enabled</source>
-        <translation>%1 暗号化有効</translation>
-    </message>
-    <message>
-        <source>Encryption Disabled</source>
-        <translation>暗号化無効</translation>
+        <source>&lt;p&gt;Failed to connect to the server &apos;%1&apos;.&lt;/p&gt;&lt;p&gt;A Client with your name is already connected to the server.&lt;/p&gt;Please ensure that you&apos;re using a unique name and that only a single instance of the client process is running.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;サーバー &apos;%1&apos; への接続に失敗しました。&lt;/p&gt;&lt;p&gt;同じ名前のクライアントがサーバーに接続済です。&lt;/p&gt;&lt;p&gt;名前の重複がないことと、クライアントプロセスが多重起動していない事を確認してください。&lt;/p&gt;</translation>
     </message>
     <message>
         <source>No IP Detected</source>
@@ -373,7 +400,7 @@ Do you want to connect to the server?
     </message>
     <message>
         <source>Using IP: </source>
-        <translation type="unfinished">IPアドレスを使用する： </translation>
+        <translation>使用IPアドレス： </translation>
     </message>
     <message>
         <source>&lt;p&gt;If connecting via the hostname fails, try %1&lt;/p&gt;</source>
@@ -381,7 +408,7 @@ Do you want to connect to the server?
     </message>
     <message>
         <source>the suggested IP.</source>
-        <translation>推奨IPアドレス</translation>
+        <translation>推奨するIPアドレス。</translation>
     </message>
     <message>
         <source>one of the following IPs:&lt;br/&gt;%1</source>
@@ -390,40 +417,8 @@ Do you want to connect to the server?
     <message>
         <source>
 A bound IP is now invalid, you may need to restart the server.</source>
-        <translation type="unfinished">
+        <translation>
 割り当て済みのIPアドレスが無効になりました。サーバーを再起動する必要があるかもしれません。</translation>
-    </message>
-    <message>
-        <source>%1 is starting...</source>
-        <translation>%1 は起動処理中です…</translation>
-    </message>
-    <message>
-        <source>%1 will retry in a moment...</source>
-        <translation>%1 はまもなく再試行します…</translation>
-    </message>
-    <message>
-        <source>%1 is stopping...</source>
-        <translation>%1 は停止処理中です…</translation>
-    </message>
-    <message>
-        <source>%1 is not running</source>
-        <translation>%1 は起動していません</translation>
-    </message>
-    <message>
-        <source>%1 is waiting for clients</source>
-        <translation>%1 はクライアント接続を待機中</translation>
-    </message>
-    <message>
-        <source>%1 is connecting...</source>
-        <translation>%1 は接続処理中…</translation>
-    </message>
-    <message>
-        <source>%1 is connected as client of %2</source>
-        <translation>%1 は %2 にクライアントとして接続中</translation>
-    </message>
-    <message>
-        <source>%1 is disconnected</source>
-        <translation>%1 は切断しました</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -495,14 +490,6 @@ A bound IP is now invalid, you may need to restart the server.</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <source>View local fingerprint</source>
-        <translation>自分の指紋を表示</translation>
-    </message>
-    <message>
-        <source>Update available</source>
-        <translation>ソフトウェア更新あり</translation>
-    </message>
-    <message>
         <source>Invalid Screen Name</source>
         <translation>不正なコンピューター名</translation>
     </message>
@@ -524,26 +511,45 @@ Valid names:
 ・_ と -
 ・1から255文字まで</translation>
     </message>
-    <message numerus="yes">
-        <source>%1 is connected, with %n client(s): %2</source>
-        <extracomment>Shown when in server mode and at least 1 client is connected %1 is replaced by the app name %2 will be a list of at least one client %n will be replaced by the number of clients (n is &gt;=1), it is not requried to be in the translation</extracomment>
-        <translation>
-            <numerusform>%1 は%n台のクライアントと接続中: %2</numerusform>
-        </translation>
-    </message>
     <message>
-        <source>Clients:
- %1</source>
-        <translation>クライアント:
- %1</translation>
+        <source>%1 Connection Error</source>
+        <translation>%1 接続エラー</translation>
     </message>
     <message>
         <source>Suggested IP: </source>
-        <translation type="unfinished">推奨IPアドレス: </translation>
+        <translation>推奨IPアドレス: </translation>
     </message>
     <message>
-        <source>The Core executable could not be successfully started, although it does exist. Please check if you have sufficient permissions to run this program.</source>
-        <translation>コア実行ファイルは存在していますが、起動できませんでした。このプログラムを実行するのに十分な権限があることを確認してください。</translation>
+        <source>&amp;Configure Client</source>
+        <translation>クライアント設定 (&amp;C)</translation>
+    </message>
+    <message>
+        <source>Connect to:</source>
+        <translation>接続先:</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;Hostname or IP address of the server computer.&lt;br/&gt;May contain a comma seperated list.&lt;/html&gt;</source>
+        <translation>&lt;html&gt;サーバーコンピューターのホスト名または IP アドレス。&lt;br/&gt;カンマ区切りのリストを含めることができます。&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>read</source>
+        <translation type="unfinished">読み取り</translation>
+    </message>
+    <message>
+        <source>read and write</source>
+        <translation type="unfinished">読み書き</translation>
+    </message>
+    <message>
+        <source>The Core executable could not be started.
+Please check if you have sufficient permissions to run %1.</source>
+        <translation type="unfinished">Coreの実行ファイルを起動できませんでした。
+%1を実行するための十分な権限があるか確認してください。</translation>
+    </message>
+    <message>
+        <source>
+Additionally, check you are able to %1 the server config file: %2</source>
+        <translation type="unfinished">
+また、サーバー設定ファイルを%1できることを確認してください: %2</translation>
     </message>
 </context>
 <context>
@@ -556,10 +562,6 @@ Valid names:
 </context>
 <context>
     <name>QObject</name>
-    <message>
-        <source>%1 is already running</source>
-        <translation>%1 は既に起動中です</translation>
-    </message>
     <message>
         <source>fatal error</source>
         <translation>致命的なエラー</translation>
@@ -631,30 +633,6 @@ Valid names:
         <translation>%1 接続完了</translation>
     </message>
     <message>
-        <source>&lt;p&gt;Failed to connect to the server &apos;%1&apos;.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;サーバー &apos;%1&apos; への接続に失敗しました。&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;A Client with your name is already connected to the server.&lt;/p&gt;Please ensure that you&apos;re using a unique name and that only a single instance of the client process is running.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;同じ名前のクライアントがサーバーに接続済です。&lt;/p&gt;&lt;p&gt;名前の重複がないことと、クライアントプロセスが多重起動していない事を確認してください。&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Please try to connect to the server using the server IP address instead of the hostname. &lt;/p&gt;&lt;p&gt;If that doesn&apos;t work, please check your TLS and firewall settings.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;サーバーのホスト名ではなくIPアドレスで接続してみてください。&lt;/p&gt;&lt;p&gt;それでも接続できない場合は、TLSとファイアウォールの設定を確認してください。&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Please check your TLS and firewall settings.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;TLSとファイアウォールの設定を確認してください。&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>%1 Connection Error</source>
-        <translation>%1 接続エラー</translation>
-    </message>
-    <message>
-        <source>Do not show this message again</source>
-        <translation>このメッセージを再表示しない</translation>
-    </message>
-    <message>
         <source>%1 - New Client</source>
         <translation>%1 - 新しいクライアント</translation>
     </message>
@@ -691,10 +669,6 @@ Valid names:
         <translation>&lt;p&gt;以下のファイルへの書き込み権限がないため、設定は読み取り専用です:&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;</translation>
     </message>
     <message>
-        <source>&lt;p&gt;Sorry, while this version of %1 does support Wayland, this build was not linked with one or more of the required libraries.&lt;/p&gt;&lt;p&gt;Please either switch to X from your login screen or use a build that uses the correct libraries.&lt;/p&gt;&lt;p&gt;If you think this is incorrect, please &lt;a href=&quot;%2&quot;&gt;report a bug&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Please check the logs for more information.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;申し訳ありません、このバージョンの %1 は Wayland に対応していますが、このビルドには必要なライブラリがリンクされていません。&lt;/p&gt;&lt;p&gt;ログイン画面から X に切り替えるか、正しいライブラリをリンクしたビルドを使用してください。&lt;/p&gt;&lt;p&gt;もしこの説明が正しくないと思われる場合は、&lt;a href=&quot;%2&quot;&gt;バグレポート&lt;/a&gt;してください。&lt;/p&gt;&lt;p&gt;詳細はログを確認してください。&lt;/p&gt;</translation>
-    </message>
-    <message>
         <source>No thanks</source>
         <translation>不要です</translation>
     </message>
@@ -725,21 +699,25 @@ Valid names:
     <message>
         <source>failed to read key from certificate file: %1</source>
         <extracomment>%1 will be replaced by the certificate path</extracomment>
-        <translation type="unfinished">証明書ファイルからキーを読み取ることができませんでした: %1</translation>
+        <translation>証明書ファイルからキーを読み取ることができませんでした: %1</translation>
     </message>
     <message>
         <source>failed to parse certificate file: %1</source>
         <extracomment>%1 will be replaced by the certificate path</extracomment>
-        <translation type="unfinished">証明書ファイルの解析に失敗しました: %1</translation>
+        <translation>証明書ファイルの解析に失敗しました: %1</translation>
     </message>
     <message>
         <source>key detected is the incorrect size</source>
-        <translation type="unfinished">検出されたキーのサイズが正しくありません</translation>
+        <translation>検出されたキーのサイズが正しくありません</translation>
     </message>
     <message>
         <source>failed to read RSA key from certificate file: %1</source>
         <extracomment>%1 will be replaced by the certificate path</extracomment>
-        <translation type="unfinished">証明書ファイルから RSA キーを読み取ることができませんでした: %1</translation>
+        <translation>証明書ファイルから RSA キーを読み取ることができませんでした: %1</translation>
+    </message>
+    <message>
+        <source>%1 is already running</source>
+        <translation>%1 は既に起動中です</translation>
     </message>
 </context>
 <context>
@@ -888,19 +866,19 @@ Valid names:
     <name>SearchWidget</name>
     <message>
         <source>Search</source>
-        <translation type="unfinished">検索</translation>
+        <translation>検索</translation>
     </message>
     <message>
         <source>Find next</source>
-        <translation type="unfinished">次を検索</translation>
+        <translation>次を検索</translation>
     </message>
     <message>
         <source>Find previous</source>
-        <translation type="unfinished">前を検索</translation>
+        <translation>前を検索</translation>
     </message>
     <message>
         <source>Find...</source>
-        <translation type="unfinished">検索...</translation>
+        <translation>検索...</translation>
     </message>
 </context>
 <context>
@@ -1102,22 +1080,6 @@ Enabling this setting will disable the server config GUI.</source>
         <translation>設定</translation>
     </message>
     <message>
-        <source>&amp;Regular</source>
-        <translation>基本(&amp;R)</translation>
-    </message>
-    <message>
-        <source>Client mode</source>
-        <translation>クライアントモード</translation>
-    </message>
-    <message>
-        <source>Use server&apos;s keyboard language on this computer</source>
-        <translation>サーバー側のキーボード言語をこのコンピューターで使用する</translation>
-    </message>
-    <message>
-        <source>App</source>
-        <translation>アプリケーション</translation>
-    </message>
-    <message>
         <source>Check for updates on startup</source>
         <translation>起動時にソフトウェア更新を確認する</translation>
     </message>
@@ -1170,20 +1132,12 @@ Enabling this setting will disable the server config GUI.</source>
         <translation>詳細(&amp;A)</translation>
     </message>
     <message>
-        <source>Networking</source>
-        <translation>ネットワーク</translation>
-    </message>
-    <message>
         <source>Port</source>
         <translation>ポート</translation>
     </message>
     <message>
         <source>Network IP</source>
         <translation>IPアドレス</translation>
-    </message>
-    <message>
-        <source>Logs</source>
-        <translation>ログ</translation>
     </message>
     <message>
         <source>Level</source>
@@ -1224,10 +1178,6 @@ Enabling this setting will disable the server config GUI.</source>
     <message>
         <source>Log path</source>
         <translation>ログファイルのパス</translation>
-    </message>
-    <message>
-        <source>Log to file</source>
-        <translation>ファイルにログを保存する</translation>
     </message>
     <message>
         <source>Using a Debug log level may affect performance. Only use a Debug level if you are attempting to debug an issue or are gathering logs to submit with a bug report.</source>
@@ -1302,6 +1252,22 @@ Enabling this setting will disable the server config GUI.</source>
         <translation>詳細なデバッグ出力</translation>
     </message>
     <message>
+        <source>Close and save changes</source>
+        <translation>変更を保存して閉じる</translation>
+    </message>
+    <message>
+        <source>Close and forget changes</source>
+        <translation>変更を破棄して閉じる</translation>
+    </message>
+    <message>
+        <source>Reset to stored values</source>
+        <translation>変更前の値にリセットする</translation>
+    </message>
+    <message>
+        <source>Reset to default values</source>
+        <translation>デフォルト値にリセットする</translation>
+    </message>
+    <message>
         <source>Enable wl-clipboard support</source>
         <translation>wl-clipboard によるクリップボード対応を有効にする</translation>
     </message>
@@ -1311,19 +1277,95 @@ Enabling this setting will disable the server config GUI.</source>
     </message>
     <message>
         <source>Automatic</source>
-        <translation type="unfinished">自動</translation>
+        <translation>自動</translation>
     </message>
     <message>
         <source>Include version in the window title</source>
-        <translation type="unfinished">ウィンドウタイトルにバージョン情報を含める</translation>
+        <translation>ウィンドウタイトルにバージョン情報を含める</translation>
     </message>
     <message>
-        <source>Invert vertical scroll direction on this computer</source>
-        <translation type="unfinished">このコンピューターで垂直スクロールの方向を反転させる</translation>
+        <source>Log to file</source>
+        <translation>ファイルにログを保存する</translation>
     </message>
     <message>
-        <source>Vertical Scroll Scale</source>
-        <translation type="unfinished">垂直スクロールスケール</translation>
+        <source>&amp;Logs</source>
+        <translation>ログ(&amp;L)</translation>
+    </message>
+    <message>
+        <source>&amp;General</source>
+        <translation>一般(&amp;G)</translation>
+    </message>
+    <message>
+        <source>&amp;Network</source>
+        <translation>ネットワーク(&amp;N)</translation>
+    </message>
+</context>
+<context>
+    <name>StatusBar</name>
+    <message>
+        <source>%1 is not running</source>
+        <translation>%1 は起動していません</translation>
+    </message>
+    <message>
+        <source>%1 is starting...</source>
+        <translation>%1 は起動処理中です…</translation>
+    </message>
+    <message>
+        <source>%1 will retry in a moment...</source>
+        <translation>%1 はまもなく再試行します…</translation>
+    </message>
+    <message>
+        <source>%1 is stopping...</source>
+        <translation>%1 は停止処理中です…</translation>
+    </message>
+    <message>
+        <source>%1 is waiting for clients</source>
+        <translation>%1 はクライアント接続を待機中</translation>
+    </message>
+    <message>
+        <source>%1 is connecting...</source>
+        <translation>%1 は接続処理中…</translation>
+    </message>
+    <message>
+        <source>%1 is connected as client of %2</source>
+        <translation>%1 は %2 にクライアントとして接続中</translation>
+    </message>
+    <message>
+        <source>%1 is disconnected</source>
+        <translation>%1 は切断しました</translation>
+    </message>
+    <message numerus="yes">
+        <source>%1 is connected, with %n client(s): %2</source>
+        <extracomment>Shown when in server mode and at least 1 client is connected %1 is replaced by the app name %2 will be a list of at least one client %n will be replaced by the number of clients (n is &gt;=1), it is not requried to be in the translation</extracomment>
+        <translation>
+            <numerusform>%1 は%n台のクライアントと接続中: %2</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Clients:
+ %1</source>
+        <translation>クライアント:
+ %1</translation>
+    </message>
+    <message>
+        <source>A new version v%1 is available</source>
+        <translation>新しいバージョン(v%1)が利用できます</translation>
+    </message>
+    <message>
+        <source>View local fingerprint</source>
+        <translation>自分の指紋を表示</translation>
+    </message>
+    <message>
+        <source>Update available</source>
+        <translation>ソフトウェア更新あり</translation>
+    </message>
+    <message>
+        <source>%1 Encryption Enabled</source>
+        <translation>%1 暗号化有効</translation>
+    </message>
+    <message>
+        <source>Encryption Disabled</source>
+        <translation>暗号化無効</translation>
     </message>
 </context>
 <context>
