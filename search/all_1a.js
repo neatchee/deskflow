@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['x_0',['x',['../structScrollRemainder.html#a06a2eab3d5996e601896b38ea2649c15',1,'ScrollRemainder::x'],['../ServerConfig_8cpp.html#a6150e0515f7202e2fb518f7206ed97dc',1,'x:&#160;ServerConfig.cpp']]],
+  ['x_0',['x',['../structCoordinate.html#a1c07b7a952310219033e97c28ac8e1c8',1,'Coordinate::x'],['../structScrollRemainder.html#a06a2eab3d5996e601896b38ea2649c15',1,'ScrollRemainder::x'],['../ServerConfig_8cpp.html#a6150e0515f7202e2fb518f7206ed97dc',1,'x:&#160;ServerConfig.cpp']]],
   ['x11layoutsparser_2ecpp_1',['X11LayoutsParser.cpp',['../X11LayoutsParser_8cpp.html',1,'']]],
   ['x11layoutsparser_2eh_2',['X11LayoutsParser.h',['../X11LayoutsParser_8h.html',1,'']]],
   ['xarchunix_2ecpp_3',['XArchUnix.cpp',['../XArchUnix_8cpp.html',1,'']]],
@@ -50,7 +50,7 @@ var searchData=
   ['xwindowskeystate_47',['XWindowsKeyState',['../classXWindowsKeyState.html',1,'XWindowsKeyState'],['../classXWindowsKeyState.html#a89dc0ab4e835e72bf0d1d180a3222fa1',1,'XWindowsKeyState::XWindowsKeyState(Display *, bool useXKB, IEventQueue *events)'],['../classXWindowsKeyState.html#ad609f8f0d9c5f9e612e3f1db59c3ea91',1,'XWindowsKeyState::XWindowsKeyState(Display *, bool useXKB, IEventQueue *events, deskflow::KeyMap &amp;keyMap)']]],
   ['xwindowskeystate_2ecpp_48',['XWindowsKeyState.cpp',['../XWindowsKeyState_8cpp.html',1,'']]],
   ['xwindowskeystate_2eh_49',['XWindowsKeyState.h',['../XWindowsKeyState_8h.html',1,'']]],
-  ['xwindowsscreen_50',['XWindowsScreen',['../classXWindowsScreen.html',1,'XWindowsScreen'],['../classXWindowsScreen.html#a13c6a62c8edaf2b1c680dc44ee272e97',1,'XWindowsScreen::XWindowsScreen()']]],
+  ['xwindowsscreen_50',['XWindowsScreen',['../classXWindowsScreen.html',1,'XWindowsScreen'],['../classXWindowsScreen.html#a746b4045db696394a08e3eec20133592',1,'XWindowsScreen::XWindowsScreen()']]],
   ['xwindowsscreen_2ecpp_51',['XWindowsScreen.cpp',['../XWindowsScreen_8cpp.html',1,'']]],
   ['xwindowsscreen_2eh_52',['XWindowsScreen.h',['../XWindowsScreen_8h.html',1,'']]],
   ['xwindowsscreensaver_53',['XWindowsScreenSaver',['../classXWindowsScreenSaver.html',1,'XWindowsScreenSaver'],['../classXWindowsScreenSaver.html#a364d1bd816caa9ff21d4b960dd11b2a1',1,'XWindowsScreenSaver::XWindowsScreenSaver(Display *, Window, void *eventTarget, IEventQueue *events)'],['../classXWindowsScreenSaver.html#afccd29c11574538c51c300269d8fa31d',1,'XWindowsScreenSaver::XWindowsScreenSaver(XWindowsScreenSaver const &amp;)=delete'],['../classXWindowsScreenSaver.html#afabd11dbadf4bb516bc2d1aab273be91',1,'XWindowsScreenSaver::XWindowsScreenSaver(XWindowsScreenSaver &amp;&amp;)=delete']]],
